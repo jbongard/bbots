@@ -1,5 +1,4 @@
-# pyrosim
-A Python Robot Simulator.
+# Braitenbots
 
 Step 1: Compile the Open Dynamics Engine (ODE) physics engine.
 
@@ -15,8 +14,6 @@ Step 2: Compile the ODE side of Pyrosim.
 
 > make
 
-Step 3: Launch an empty Pyro simulation.
+Step 3: Launch Braitenbots 
 
-> python empty.py 
-
-# bbots
+> python bbots.py 

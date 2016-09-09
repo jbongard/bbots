@@ -28,8 +28,24 @@ class ROBOT:
 
 		self.Connect_Back_Wheel_To_Chassis()
 
+		self.Add_Infrared_Sensors()
+
 # ------------------- Private methods ------------------------
 
+	def Add_Infrared_Sensors(self):
+
+		self.Add_Left_Infrared_Sensor()
+
+	def Add_Left_Infrared_Sensor(self):
+
+                x = self.robotPosX - c.ROBOT_WIDTH/2.0
+
+                y = self.robotPosY + c.ROBOT_LENGTH/2.0
+
+                z = c.WHEEL_RADIUS + c.ROBOT_HEIGHT
+
+        	self.sim.Send_Ray_Sensor(ID=0, objectIndex=7, x=x,y=y,z=z, r1=0,r2=1,r3=0)
+		
         def Connect_Back_Wheel_To_Chassis(self):
 
                 x = self.robotPosX
