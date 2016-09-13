@@ -7,11 +7,11 @@ class ROBOT:
 
 		pass
 
-	def Send_To_Sim(self,sim):
+	def Send_To_Sim(self,sim,environmentIndex,sh,hm):
 
 		self.sim = sim
 
-        	self.robotPosX = -c.OBSTACLE_WIDTH
+        	self.robotPosX = -c.OBSTACLE_WIDTH + (2.0 * environmentIndex * c.OBSTACLE_WIDTH) / ( c.NUM_ENVIRONMENTS - 1.0 )
 
         	self.robotPosY = -6.0 * c.OBSTACLE_LENGTH
 
@@ -35,11 +35,19 @@ class ROBOT:
 
 		self.Add_Sensor_Neurons()
 
+		self.Add_Hidden_Neurons()
+
 		self.Add_Motor_Neurons()
 
-		self.Add_Synapses()
+		self.Add_Synapses(sh,hm)
 
 # ------------------- Private methods ------------------------
+
+	def Add_Hidden_Neurons(self):
+
+		for h in range(0,c.NUM_HIDDEN_NEURONS):
+
+        		self.sim.Send_Hidden_Neuron(ID = c.NUM_SENSORS + h , layer = 1)
 
 	def Add_Infrared_Sensors(self):
 
@@ -73,9 +81,9 @@ class ROBOT:
 
 	def Add_Motor_Neurons(self):
 
-		self.sim.Send_Motor_Neuron(ID = 2 , jointID = 0 , layer = 1 , tau = c.MAX_ACCELERATION)
+		for m in range(0,c.NUM_MOTORS):
 
-                self.sim.Send_Motor_Neuron(ID = 3 , jointID = 1 , layer = 1 , tau = c.MAX_ACCELERATION)
+			self.sim.Send_Motor_Neuron(ID = c.NUM_SENSORS + c.NUM_HIDDEN_NEURONS + m , jointID = m , layer = 2 , tau = c.MAX_ACCELERATION)
 
         def Add_Right_Infrared_Sensor(self):
 
@@ -97,22 +105,27 @@ class ROBOT:
 
 	def Add_Sensor_Neurons(self):
 
-		self.sim.Send_Sensor_Neuron(ID=0, sensorID=0, layer=0 )
+		for s in range(0,c.NUM_SENSORS):
 
-                self.sim.Send_Sensor_Neuron(ID=1, sensorID=1, layer=0 )
+			self.sim.Send_Sensor_Neuron(ID=s, sensorID=s, layer=0 )
 
+	def Add_Synapses(self,sh,hm):
 
-	def Add_Synapses(self):
+		for s in range(0,c.NUM_SENSORS):
 
-		for s in range(0,1+1):
+			for h in range(0,c.NUM_HIDDEN_NEURONS):
 
-			for m in range(2,3+1):
+				wt = sh[s,h] 
 
-				# wt = random.random()*2-1
+				self.sim.Send_Synapse(sourceNeuronIndex = s , targetNeuronIndex = c.NUM_SENSORS + h , weight = wt ) 
 
-				wt = -1.0
+		for h in range(0,c.NUM_HIDDEN_NEURONS):
 
-				self.sim.Send_Synapse(sourceNeuronIndex = s , targetNeuronIndex = m , weight = wt ) 
+			for m in range(0,c.NUM_MOTORS):
+
+				wt = hm[h,m]
+
+                                self.sim.Send_Synapse(sourceNeuronIndex = c.NUM_SENSORS + h , targetNeuronIndex = c.NUM_SENSORS + c.NUM_HIDDEN_NEURONS + m , weight = wt )
 	
         def Connect_Back_Wheel_To_Chassis(self):
 

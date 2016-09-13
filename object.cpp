@@ -330,6 +330,15 @@ void OBJECT::CreateBox(dWorldID world, dSpaceID space,
        	dGeomSetBody (geom,body);
 
         dGeomSetData(geom,this);
+
+	if ( makeImmovable ) {
+
+		weldToWorld = dJointCreateFixed(world,0);
+
+		dJointAttach(weldToWorld,body,0);
+
+		dJointSetFixed(weldToWorld);
+	}
 }
 
 void OBJECT::CreateCylinder(dWorldID world, dSpaceID space,
@@ -355,6 +364,15 @@ void OBJECT::CreateCylinder(dWorldID world, dSpaceID space,
        	dGeomSetBody (geom,body);
 
 	dGeomSetData(geom,this);
+
+        if ( makeImmovable ) {
+
+                weldToWorld = dJointCreateFixed(world,0);
+
+                dJointAttach(weldToWorld,body,0);
+
+                dJointSetFixed(weldToWorld);
+        }
 }
 
 double OBJECT::Distance_To(OBJECT *otherObject) {

@@ -22,6 +22,8 @@ private:
 
         dGeomID geom;
 
+	dJointID weldToWorld;
+
 	double x,y,z;
 
 	double r1,r2,r3;
