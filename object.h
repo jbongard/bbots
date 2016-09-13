@@ -32,6 +32,10 @@ private:
 
 	double r,g,b;
 
+	int partOfRobot;
+
+	int makeImmovable;
+
         LIGHT_SENSOR *lightSensor;
 
 	POSITION_SENSOR *positionSensor;
@@ -78,6 +82,8 @@ public:
 	double Get_Radius(void);
 
 	double Get_Red_Component(void);
+
+	int  Part_Of_Robot(void);
 
         void Poll_Sensors(int numObjects, OBJECT **objects, int t);
 

@@ -81,7 +81,7 @@ static void nearCallback (void *data, dGeomID o1, dGeomID o2)
 
         OBJECT *d2 = (OBJECT *)dGeomGetData(o2);
 
-	if ( d1 && d2 ) // Cancel collisions between objects. 
+	if ( d1 && d2 && d1->Part_Of_Robot() && d2->Part_Of_Robot() )
 
 		return;
 

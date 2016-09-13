@@ -47,7 +47,7 @@ void JOINT::Actuate(void) {
 
 	double desiredVelocity = zeroToOne * ( highStop - lowStop ) + lowStop;
 
-	double currentVelocity = dJointGetHingeRate(joint);
+	double currentVelocity = dJointGetHingeAngleRate(joint);
 
 	double diff = desiredVelocity - currentVelocity;
 

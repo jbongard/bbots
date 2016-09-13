@@ -166,6 +166,11 @@ double OBJECT::Get_Red_Component(void) {
 	return r;
 }
 
+int  OBJECT::Part_Of_Robot(void) {
+
+	return partOfRobot;
+}
+
 void OBJECT::Poll_Sensors(int numObjects, OBJECT **objects, int t) {
 
 	if ( lightSensor ) {
@@ -210,6 +215,10 @@ void OBJECT::Read_From_Python(dWorldID world, dSpaceID space, int shape) {
 
                 std::cin >> b;
 
+		std::cin >> partOfRobot;
+
+		std::cin >> makeImmovable;
+
 		CreateBox(world,space, x,y,z, length,width,height);
 	}
 	else {
@@ -229,6 +238,10 @@ void OBJECT::Read_From_Python(dWorldID world, dSpaceID space, int shape) {
                 std::cin >> g;
 
                 std::cin >> b;
+
+		std::cin >> partOfRobot;
+
+		std::cin >> makeImmovable;
 
                 CreateCylinder(world,space, x,y,z, r1,r2,r3, length,radius);
 	}
@@ -307,13 +320,14 @@ void OBJECT::CreateBox(dWorldID world, dSpaceID space,
 
         dMass m;
 
-        body = dBodyCreate (world);
-        dBodySetPosition (body,x,y,z);
-        dMassSetBox (&m,1,length,width,height);
-        dMassAdjust (&m,1);
-        dBodySetMass (body,&m);
         geom = dCreateBox(space,length,width,height);
-        dGeomSetBody (geom,body);
+
+      	body = dBodyCreate (world);
+       	dBodySetPosition (body,x,y,z);
+       	dMassSetBox (&m,1 + makeImmovable*1000.0,length,width,height);
+       	dMassAdjust (&m,1 + makeImmovable*1000.0);
+       	dBodySetMass (body,&m);
+       	dGeomSetBody (geom,body);
 
         dGeomSetData(geom,this);
 }
@@ -323,22 +337,22 @@ void OBJECT::CreateCylinder(dWorldID world, dSpaceID space,
                                                 double r1, double r2, double r3,
                                                 double length, double radius) {
 
-        dMass m;
-
-        body = dBodyCreate (world);
-        dBodySetPosition (body,x,y,z);
+        geom = dCreateCapsule(space,radius,length);
 
         dMatrix3 R;
         dRFromZAxis(R,r1,r2,r3);
-    	dBodySetRotation(body,R);
 
-        // dMassSetSphere (&m,1,radius);
+       	dMass m;
+
+       	body = dBodyCreate (world);
+       	dBodySetPosition (body,x,y,z);
+
+	dBodySetRotation(body,R);
+
 	dMassSetCapsule(&m,1,1,radius,length);
-        dMassAdjust (&m,1);
-        dBodySetMass (body,&m);
-        // geom = dCreateCylinder(space,radius,length);
-        geom = dCreateCapsule(space,radius,length);
-        dGeomSetBody (geom,body);
+       	dMassAdjust (&m,1 + makeImmovable * 1000.0);
+       	dBodySetMass (body,&m);
+       	dGeomSetBody (geom,body);
 
 	dGeomSetData(geom,this);
 }

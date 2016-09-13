@@ -47,7 +47,7 @@ class PYROSIM:
 
                 self.Send(outputString)
 
-	def Send_Box(self, ID=0, x=0, y=0, z=0, length=0.1, width=0.1, height=0.1, r=1, g=1, b=1):
+	def Send_Box(self, ID=0, x=0, y=0, z=0, length=0.1, width=0.1, height=0.1, r=1, g=1, b=1, partOfRobot=True, makeImmovable=False):
 
                 outputString = 'Box'
 
@@ -65,11 +65,23 @@ class PYROSIM:
                 outputString = outputString + ' ' + str(g)
                 outputString = outputString + ' ' + str(b)
 
+		if ( partOfRobot == True ):
+
+                	outputString = outputString + ' 1'
+		else:
+                        outputString = outputString + ' 0' 
+
+                if ( makeImmovable == True ):
+
+                        outputString = outputString + ' 1'
+                else:
+                        outputString = outputString + ' 0'
+
                 outputString = outputString + '\n'
 
                 self.Send(outputString)
 
-        def Send_Cylinder(self, ID=0, x=0, y=0, z=0, r1=0, r2=0, r3=1, length=1.0, radius=0.1, r=1, g=1, b=1):
+        def Send_Cylinder(self, ID=0, x=0, y=0, z=0, r1=0, r2=0, r3=1, length=1.0, radius=0.1, r=1, g=1, b=1, partOfRobot=True, makeImmovable=False):
 
                 outputString = 'Cylinder'
 
@@ -89,6 +101,18 @@ class PYROSIM:
                 outputString = outputString + ' ' + str(r)
                 outputString = outputString + ' ' + str(g)
                 outputString = outputString + ' ' + str(b)
+
+                if ( partOfRobot == True ):
+
+                        outputString = outputString + ' 1' 
+                else:
+                        outputString = outputString + ' 0'
+
+                if ( makeImmovable == True ):
+
+                        outputString = outputString + ' 1'
+                else:
+                        outputString = outputString + ' 0'
 
                 outputString = outputString + '\n'
 
