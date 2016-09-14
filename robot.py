@@ -1,23 +1,37 @@
 import constants as c
+from pyrosim import PYROSIM
+
 import random
+import numpy as np
+import math
 
 class ROBOT:
 
         def __init__(self):
 
-		pass
+		self.sh = np.random.rand(c.NUM_SENSORS,c.NUM_HIDDEN_NEURONS) * 2 - 1
 
-	def Send_To_Sim(self,sim,environmentIndex):
+		self.hm = np.random.rand(c.NUM_HIDDEN_NEURONS,c.NUM_MOTORS) * 2 - 1
 
-		self.sim = sim
+	def Evaluate(self,obstacles,playBlind):
 
-        	self.robotPosX = -c.OBSTACLE_WIDTH + (2.0 * environmentIndex * c.OBSTACLE_WIDTH) / ( c.NUM_ENVIRONMENTS - 1.0 )
+                self.sim = PYROSIM(playBlind=playBlind)
 
-        	self.robotPosY = -6.0 * c.OBSTACLE_LENGTH
+                self.Send_To_Sim(0)
 
-		self.Create_Body()
+                obstacles.Send_To_Sim(self.sim)
 
-		#self.Create_Brain()
+                self.sim.Start()
+
+                self.sim.Wait_To_Finish()
+
+		self.Compute_Fitness()
+
+	def Mutate(self):
+
+		self.Mutate_SH()
+
+		self.Mutate_HM()
 
 # ------------------- Private methods ------------------------
 
@@ -87,13 +101,13 @@ class ROBOT:
 
 			self.sim.Send_Sensor_Neuron(ID=s, sensorID=s, layer=0 )
 
-	def Add_Synapses(self,sh,hm):
+	def Add_Synapses(self):
 
 		for s in range(0,c.NUM_SENSORS):
 
 			for h in range(0,c.NUM_HIDDEN_NEURONS):
 
-				wt = sh[s,h] 
+				wt = self.sh[s,h] 
 
 				self.sim.Send_Synapse(sourceNeuronIndex = s , targetNeuronIndex = c.NUM_SENSORS + h , weight = wt ) 
 
@@ -101,10 +115,24 @@ class ROBOT:
 
 			for m in range(0,c.NUM_MOTORS):
 
-				wt = hm[h,m]
+				wt = self.hm[h,m]
 
                                 self.sim.Send_Synapse(sourceNeuronIndex = c.NUM_SENSORS + h , targetNeuronIndex = c.NUM_SENSORS + c.NUM_HIDDEN_NEURONS + m , weight = wt )
-	
+
+        def Compute_Fitness(self):
+
+		self.fitness = 0.0
+
+                sensorValues = np.zeros((2,c.evaluationTime),dtype='f')
+
+                for t in range(0,c.evaluationTime):
+
+                        for s in range(0,2):
+
+                                sensorValues[s,t] = self.sim.Get_Sensor_Data(s+2,0,t)
+
+                self.fitness = self.fitness + sum(sum(sensorValues))
+
         def Connect_Back_Wheel_To_Chassis(self):
 
                 x = self.robotPosX
@@ -154,7 +182,23 @@ class ROBOT:
                 self.Add_Sensor_Neurons()
                 self.Add_Hidden_Neurons()
                 self.Add_Motor_Neurons()
-                self.Add_Synapses(sh,hm)
+                self.Add_Synapses()
+
+        def Mutate_SH(self):
+
+                i = random.randint(0,c.NUM_SENSORS-1)
+
+                j = random.randint(0,c.NUM_HIDDEN_NEURONS-1)
+
+                self.sh[i,j] = random.gauss( self.sh[i,j] , math.fabs( self.sh[i,j] ) )
+
+        def Mutate_HM(self):
+
+                i = random.randint(0,c.NUM_HIDDEN_NEURONS-1)
+
+                j = random.randint(0,c.NUM_MOTORS-1)
+
+                self.hm[i,j] = random.gauss( self.hm[i,j] , math.fabs( self.hm[i,j] ) )
 
 	def Send_Back_Wheel(self):
 
@@ -198,3 +242,12 @@ class ROBOT:
 
         	self.sim.Send_Cylinder(ID=1, x=x, y=y, z=z, r1=1, r2=0, r3=0, length=0.0, radius=c.WHEEL_RADIUS, r=1, g=1, b=1)
 
+        def Send_To_Sim(self,environmentIndex):
+
+                self.robotPosX = -c.OBSTACLE_WIDTH + (2.0 * environmentIndex * c.OBSTACLE_WIDTH) / ( c.NUM_ENVIRONMENTS - 1.0 )
+
+                self.robotPosY = -6.0 * c.OBSTACLE_LENGTH
+
+                self.Create_Body()
+
+                self.Create_Brain()
