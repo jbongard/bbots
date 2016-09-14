@@ -75,27 +75,28 @@ def Perform_Simulation(sh,hm,playblind,playpaused):
 
 # --------------------- Main function ------------------
 
-parentSH = np.random.rand(c.NUM_SENSORS,c.NUM_HIDDEN_NEURONS) * 2 - 1
+sim = PYROSIM()
 
-parentHM = np.random.rand(c.NUM_HIDDEN_NEURONS,c.NUM_MOTORS) * 2 - 1
+robot = ROBOT()
 
-parentFitness = Perform_Simulation(parentSH,parentHM,True,False)
+robot.Send_To_Sim(sim,0)
 
-for g in range(0,c.NUM_GENERATIONS):
+obstacles = OBSTACLES()
 
-	[childSH,childHM] = Mutation_Of(parentSH,parentHM)
+obstacles.Send_To_Sim(sim)
 
-	childFitness = Perform_Simulation(childSH,childHM,True,False)
+sim.Start()
 
-	print g , parentFitness , childFitness
-
-	if ( childFitness > parentFitness ):
-
-		parentSH = childSH
-
-		parentHM = childHM
-
-		parentFitness = childFitness
-
-parentFitness = Perform_Simulation(parentSH,parentHM,False,True)
+#parentSH = np.random.rand(c.NUM_SENSORS,c.NUM_HIDDEN_NEURONS) * 2 - 1
+#parentHM = np.random.rand(c.NUM_HIDDEN_NEURONS,c.NUM_MOTORS) * 2 - 1
+#parentFitness = Perform_Simulation(parentSH,parentHM,True,False)
+#for g in range(0,c.NUM_GENERATIONS):
+#	[childSH,childHM] = Mutation_Of(parentSH,parentHM)
+#	childFitness = Perform_Simulation(childSH,childHM,True,False)
+#	print g , parentFitness , childFitness
+#	if ( childFitness > parentFitness ):
+#		parentSH = childSH
+#		parentHM = childHM
+#		parentFitness = childFitness
+#parentFitness = Perform_Simulation(parentSH,parentHM,False,True)
 
