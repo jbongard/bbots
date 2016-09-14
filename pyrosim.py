@@ -318,6 +318,10 @@ class PYROSIM:
 
                 dataFromSimulator = dataFromSimulator.split()
 
+		if ( dataFromSimulator == [] ):
+
+			self.simulationSucceeded = False
+
 		index = 0
 
 		while ( dataFromSimulator[index] != 'Done' ):
@@ -339,6 +343,8 @@ class PYROSIM:
 					self.dataFromPython[ID,s,t] = sensorValue
 
 					index = index + 1
+
+		self.simulationSucceeded = True
 
 	def Send(self,stringToSend):
 

@@ -11,35 +11,78 @@ class ROBOT:
 
 		self.sh = np.random.rand(c.NUM_SENSORS,c.NUM_HIDDEN_NEURONS) * 2 - 1
 
+                self.hh = np.random.rand(c.NUM_HIDDEN_NEURONS,c.NUM_HIDDEN_NEURONS) * 2 - 1
+
 		self.hm = np.random.rand(c.NUM_HIDDEN_NEURONS,c.NUM_MOTORS) * 2 - 1
 
-	def Evaluate(self,obstacles,playBlind):
+	def Evaluate(self,obstacles,playBlind,playPaused):
 
-                self.sim = PYROSIM(playBlind=playBlind)
+		self.sims = {}
 
-                self.Send_To_Sim(0)
+		for e in range(0,c.NUM_ENVIRONMENTS):
 
-                obstacles.Send_To_Sim(self.sim)
+                	self.sims[e] = PYROSIM(playBlind=playBlind,playPaused=playPaused)
 
-                self.sim.Start()
+			self.sim = self.sims[e]
 
-                self.sim.Wait_To_Finish()
+                	self.Send_To_Sim(e)
 
-		self.Compute_Fitness()
+                	obstacles.Send_To_Sim(self.sims[e])
+
+                	self.sims[e].Start()
+
+		self.fitness = 0.0
+
+                for e in range(0,c.NUM_ENVIRONMENTS):
+
+			self.sim = self.sims[e]
+
+                	self.sims[e].Wait_To_Finish()
+
+			self.Compute_Fitness()
 
 	def Mutate(self):
 
-		self.Mutate_SH()
+		mutType = random.randint(0,2)
 
-		self.Mutate_HM()
+		if ( mutType == 0 ):
+
+			self.Mutate_SH()
+
+		elif ( mutType == 1 ):
+
+			self.Mutate_HH()
+
+		else:
+			self.Mutate_HM()
 
 # ------------------- Private methods ------------------------
+
+        def Add_HH_Synapses(self):
+
+                for h1 in range(0,c.NUM_HIDDEN_NEURONS):
+
+                        for h2 in range(0,c.NUM_HIDDEN_NEURONS):
+
+                                wt = self.hh[h1,h2]
+
+                                self.sim.Send_Synapse(sourceNeuronIndex = c.NUM_SENSORS + h1 , targetNeuronIndex = c.NUM_SENSORS + h2 , weight = wt )
 
 	def Add_Hidden_Neurons(self):
 
 		for h in range(0,c.NUM_HIDDEN_NEURONS):
 
         		self.sim.Send_Hidden_Neuron(ID = c.NUM_SENSORS + h , layer = 1)
+
+        def Add_HM_Synapses(self):
+
+                for h in range(0,c.NUM_HIDDEN_NEURONS):
+
+                        for m in range(0,c.NUM_MOTORS):
+
+                                wt = self.hm[h,m]
+
+                                self.sim.Send_Synapse(sourceNeuronIndex = c.NUM_SENSORS + h , targetNeuronIndex = c.NUM_SENSORS + c.NUM_HIDDEN_NEURONS + m , weight = wt )
 
 	def Add_Infrared_Sensors(self):
 
@@ -109,23 +152,24 @@ class ROBOT:
 
 			self.sim.Send_Sensor_Neuron(ID=s, sensorID=s, layer=0 )
 
+        def Add_SH_Synapses(self):
+
+                for s in range(0,c.NUM_SENSORS):
+
+                        for h in range(0,c.NUM_HIDDEN_NEURONS):
+
+                                wt = self.sh[s,h]
+
+                                self.sim.Send_Synapse(sourceNeuronIndex = s , targetNeuronIndex = c.NUM_SENSORS + h , weight = wt )
+
 	def Add_Synapses(self):
 
-		for s in range(0,c.NUM_SENSORS):
+		self.Add_SH_Synapses()
 
-			for h in range(0,c.NUM_HIDDEN_NEURONS):
+		self.Add_HH_Synapses()
 
-				wt = self.sh[s,h] 
+		self.Add_HM_Synapses()
 
-				self.sim.Send_Synapse(sourceNeuronIndex = s , targetNeuronIndex = c.NUM_SENSORS + h , weight = wt ) 
-
-		for h in range(0,c.NUM_HIDDEN_NEURONS):
-
-			for m in range(0,c.NUM_MOTORS):
-
-				wt = self.hm[h,m]
-
-                                self.sim.Send_Synapse(sourceNeuronIndex = c.NUM_SENSORS + h , targetNeuronIndex = c.NUM_SENSORS + c.NUM_HIDDEN_NEURONS + m , weight = wt )
 
 	def Add_Touch_Sensors(self):
 
@@ -135,7 +179,9 @@ class ROBOT:
 
         def Compute_Fitness(self):
 
-		self.fitness = 0.0
+                if ( self.sim.simulationSucceeded == False ):
+
+			return
 
                 sensorValues = np.zeros((2,c.evaluationTime),dtype='f')
 
@@ -215,6 +261,14 @@ class ROBOT:
                 j = random.randint(0,c.NUM_HIDDEN_NEURONS-1)
 
                 self.sh[i,j] = random.gauss( self.sh[i,j] , math.fabs( self.sh[i,j] ) )
+
+        def Mutate_HH(self):
+
+                i = random.randint(0,c.NUM_HIDDEN_NEURONS-1)
+
+                j = random.randint(0,c.NUM_HIDDEN_NEURONS-1)
+
+                self.hh[i,j] = random.gauss( self.hh[i,j] , math.fabs( self.hh[i,j] ) )
 
         def Mutate_HM(self):
 

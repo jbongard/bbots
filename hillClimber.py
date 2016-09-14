@@ -17,7 +17,7 @@ class HILLCLIMBER:
 
 		self.parent = ROBOT()
 
-		self.parent.Evaluate(self.obstacles,playBlind=True)
+		self.parent.Evaluate(self.obstacles,playBlind=True,playPaused=False)
 
 		for g in range(0,c.NUM_GENERATIONS):
 
@@ -25,7 +25,7 @@ class HILLCLIMBER:
 
 			child.Mutate()
 
-			child.Evaluate(self.obstacles,playBlind=True)
+			child.Evaluate(self.obstacles,playBlind=True,playPaused=False)
 
 			print g , self.parent.fitness , child.fitness
 
@@ -35,5 +35,5 @@ class HILLCLIMBER:
 
 	def ShowBest(self):
 
-		self.parent.Evaluate(self.obstacles,playBlind=False)
+		self.parent.Evaluate(self.obstacles,playBlind=False,playPaused=True)
 
