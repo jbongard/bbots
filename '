@@ -65,7 +65,7 @@ class ROBOT:
 
         	self.sim.Send_Light_Sensor(ID=2, objectIndex = 5 )
 
-        def Add_Left_Touch_Sensor(self):
+        def Add_Left_Touch_Sensor_To_Left_Wheel(self):
 
                 self.sim.Send_Touch_Sensor(ID=4, objectIndex = 0 )
 
@@ -99,10 +99,6 @@ class ROBOT:
 
                 self.sim.Send_Light_Sensor(ID=3, objectIndex = 6 )
 
-        def Add_Right_Touch_Sensor(self):
-
-                self.sim.Send_Touch_Sensor(ID=5, objectIndex = 1 )
-
 	def Add_Sensor_Neurons(self):
 
 		for s in range(0,c.NUM_SENSORS):
@@ -129,9 +125,13 @@ class ROBOT:
 
 	def Add_Touch_Sensors(self):
 
-		self.Add_Left_Touch_Sensor()
+		self.Add_Left_Touch_Sensor_To_Left_Wheel()
 
-		self.Add_Right_Touch_Sensor()
+		self.Add_Right_Touch_Sensor_to_Right_Wheel()
+
+	def Add_Right_Touch_Sensor_To_Right_Wheel(self):
+
+                self.sim.Send_Touch_Sensor(ID=5, objectIndex = 1 )
 
         def Compute_Fitness(self):
 
@@ -141,18 +141,9 @@ class ROBOT:
 
                 for t in range(0,c.evaluationTime):
 
-			leftWheelOnTheGround = self.sim.Get_Sensor_Data(4,0,t)
+                        for s in range(0,2):
 
-                        rightWheelOnTheGround = self.sim.Get_Sensor_Data(5,0,t)
-
-			bothWheelsOnTheGround = leftWheelOnTheGround and rightWheelOnTheGround
-
-			if ( bothWheelsOnTheGround ):
-
-                               	sensorValues[0,t] = self.sim.Get_Sensor_Data(2,0,t)
-
-                                sensorValues[1,t] = self.sim.Get_Sensor_Data(3,0,t)
-
+                                sensorValues[s,t] = self.sim.Get_Sensor_Data(s+2,0,t)
 
                 self.fitness = self.fitness + sum(sum(sensorValues))
 
@@ -199,7 +190,6 @@ class ROBOT:
                 self.Connect_Back_Wheel_To_Chassis()
                 self.Add_Infrared_Sensors()
                 self.Add_Light_Sensors()
-		self.Add_Touch_Sensors()
 
         def Create_Brain(self):
 
