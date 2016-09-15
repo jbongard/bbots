@@ -22,6 +22,8 @@ class AFPO:
 
 		self.nextAvailableID = 0
 
+                self.numNonDominated = 0
+
 		for g in range(0,constants.popSize):
 
 			self.genomes[g] = GENOME(self.nextAvailableID)
@@ -94,13 +96,19 @@ class AFPO:
 
 	def Evaluate_All(self):
 
-		self.genomes[0].evaluated = False
+		runningGenome = self.numNonDominated
 
-		for g in range(0,constants.popSize):
+		self.genomes[runningGenome].Start(self.obstacles,playBlind=True,playPaused=False)
 
-			if ( self.genomes[g].evaluated == False ):
+		while ( (runningGenome+1) < constants.popSize ):
 
-				self.genomes[g].Evaluate(self.obstacles,playBlind=True,playPaused=False)
+			self.genomes[runningGenome+1].Start(self.obstacles,playBlind=True,playPaused=False)
+
+			self.genomes[runningGenome].End()
+
+			runningGenome = runningGenome + 1
+
+		self.genomes[constants.popSize-1].End()
 
 	def Fill(self):
 

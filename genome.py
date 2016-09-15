@@ -45,21 +45,7 @@ class GENOME:
                 else:
                         return False
 
-	def Evaluate(self,obstacles,playBlind,playPaused):
-
-		self.sims = {}
-
-		for e in range(0,c.NUM_ENVIRONMENTS):
-
-                	self.sims[e] = PYROSIM(playBlind=playBlind,playPaused=playPaused)
-
-			self.sim = self.sims[e]
-
-                	self.Send_To_Sim(e)
-
-                	obstacles.Send_To_Sim(self.sims[e])
-
-                	self.sims[e].Start()
+	def End(self):
 
 		self.fitness = 0.0
 
@@ -128,6 +114,22 @@ class GENOME:
         def Set_Dominated(self,dominated):
 
                 self.dominated = dominated
+
+        def Start(self,obstacles,playBlind,playPaused):
+
+                self.sims = {}
+
+                for e in range(0,c.NUM_ENVIRONMENTS):
+
+                        self.sims[e] = PYROSIM(playBlind=playBlind,playPaused=playPaused)
+
+                        self.sim = self.sims[e]
+
+                        self.Send_To_Sim(e)
+
+                        obstacles.Send_To_Sim(self.sims[e])
+
+                        self.sims[e].Start()
 
 # ------------------- Private methods ------------------------
 
