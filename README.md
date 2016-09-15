@@ -17,3 +17,7 @@ Step 2: Compile the ODE side of Pyrosim.
 Step 3: Launch Braitenbots 
 
 > python bbots.py 
+
+Step 4: Play back the best solution (at any time):
+
+> python playback.py

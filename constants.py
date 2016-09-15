@@ -1,4 +1,4 @@
-evaluationTime = 100
+evaluationTime = 200
 
 popSize = 50
 

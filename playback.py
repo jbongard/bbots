@@ -11,6 +11,6 @@ if ( os.path.exists('best.txt') ):
 
         f.close()
 
-        genome.Evaluate(OBSTACLES(),playBlind=False,playPaused=False)
+        genome.Evaluate(OBSTACLES(),playBlind=False,playPaused=True)
 
         print genome.fitness
