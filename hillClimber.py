@@ -27,7 +27,13 @@ class HILLCLIMBER:
 
 			child.Evaluate(self.obstacles,playBlind=True,playPaused=False)
 
-			print g , self.parent.fitness , child.fitness
+			printString = "[generation " + str(g) + " of " + str(c.NUM_GENERATIONS) + "]: "
+
+			printString = printString + "[parent fitness: " + str(self.parent.fitness) + "] "
+
+                        printString = printString + "[child fitness: " + str(child.fitness) + "] "
+
+			print printString
 
 			if ( child.fitness > self.parent.fitness ):
 
