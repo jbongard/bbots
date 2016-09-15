@@ -1,10 +1,15 @@
-from hillClimber import HILLCLIMBER
+#from hillClimber import HILLCLIMBER
+
+from afpo import AFPO
 
 # --------------------- Main function ------------------
 
-hillClimber = HILLCLIMBER()
+#hillClimber = HILLCLIMBER()
 
-hillClimber.Evolve()
+#hillClimber.Evolve()
 
-hillClimber.ShowBest()
+#hillClimber.ShowBest()
 
+afpo = AFPO()
+
+afpo.Evolve()

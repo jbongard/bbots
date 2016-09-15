@@ -322,6 +322,8 @@ class PYROSIM:
 
 			self.simulationSucceeded = False
 
+			return
+
 		index = 0
 
 		while ( dataFromSimulator[index] != 'Done' ):

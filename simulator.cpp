@@ -85,6 +85,10 @@ static void nearCallback (void *data, dGeomID o1, dGeomID o2)
 
 		return;
 
+        if ( d1 && d2 && !d1->Part_Of_Robot() && !d2->Part_Of_Robot() )
+
+                return;
+
 	if ( d1 )
 		d1->Touch_Sensor_Fires(timer);
 
