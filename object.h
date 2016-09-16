@@ -69,9 +69,7 @@ public:
 
         void Create_Vestibular_Sensor(int myID, int evalPeriod);
 
-	void Draw(void);
-
-	void Draw_Ray_Sensor(double x, double y, double z, int t);
+	void Draw(int t);
 
         double Get_Blue_Component(void);
 
@@ -91,7 +89,7 @@ public:
 
 	void Read_From_Python(dWorldID world, dSpaceID space, int shape);
 
-	void Set_Ray_Sensor(double distance,OBJECT *objectThatWasHit, int t);
+	void Set_Ray_Sensor(double distance, double hitX, double hitY, double hitZ, OBJECT *objectThatWasHit, int t);
 
 	void Touch_Sensor_Fires(int t);
 

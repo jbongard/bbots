@@ -34,11 +34,11 @@ void ENVIRONMENT::Actuate_Joints(void) {
                 joints[j]->Actuate();
 }
 
-void ENVIRONMENT::Draw(void) {
+void ENVIRONMENT::Draw(int t) {
 
         for (int i=0;i<numberOfBodies;i++)
 
-                objects[i]->Draw();
+                objects[i]->Draw(t);
 }
 
 void ENVIRONMENT::Read_From_Python(dWorldID world,dSpaceID space, int *evaluationTime) {

@@ -119,7 +119,7 @@ void OBJECT::Create_Vestibular_Sensor(int myID, int evalPeriod) {
         vestibularSensor = new VESTIBULAR_SENSOR(myID,evalPeriod);
 }
 
-void OBJECT::Draw(void) {
+void OBJECT::Draw(int t) {
 
         dsSetColor(r,g,b);
 
@@ -128,13 +128,10 @@ void OBJECT::Draw(void) {
 		DrawBox();
 	else
 		DrawCylinder();
-}
-
-void OBJECT::Draw_Ray_Sensor(double x, double y, double z, int t) {
 
 	if ( raySensor )
 
-		raySensor->Draw(x,y,z,t);
+		raySensor->Draw(t);
 }
 
 double OBJECT::Get_Blue_Component(void) {
@@ -247,11 +244,11 @@ void OBJECT::Read_From_Python(dWorldID world, dSpaceID space, int shape) {
 	}
 }
 
-void OBJECT::Set_Ray_Sensor(double distance, OBJECT *objectThatWasHit, int t) {
+void OBJECT::Set_Ray_Sensor(double distance, double hitX, double hitY, double hitZ, OBJECT *objectThatWasHit, int t) {
 
 	if ( raySensor )
 
-		raySensor->Set(distance,objectThatWasHit,t);
+		raySensor->Set(distance,hitX,hitY,hitZ,objectThatWasHit,t);
 }
 
 void OBJECT::Touch_Sensor_Fires(int t) {

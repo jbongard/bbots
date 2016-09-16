@@ -27,7 +27,7 @@ public:
 
 	void Actuate_Joints(void);
 
-	void Draw(void);
+	void Draw(int t);
 
         void Poll_Sensors(int t);
 

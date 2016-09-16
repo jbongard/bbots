@@ -24,6 +24,12 @@ private:
 
 	double *r, *g, *b;
 
+	double collisionPointX;
+
+	double collisionPointY;
+
+	double collisionPointZ;
+
         NEURON *mySensorNeurons[4];
 
 public:
@@ -35,15 +41,13 @@ public:
 
         void Connect_To_Sensor_Neuron(NEURON *sensorNeuron);
 
-	void Draw(double endX, double endY, double endZ, int t);
+	void Draw(int t);
 
         int  Get_ID(void);
 
 	void Initialize(int evalPeriod);
 
-	void Reset(void);
-
-	void Set(double distance, OBJECT *objectThatWasHit, int t);
+	void Set(double distance, double hitX, double hitY, double hitZ, OBJECT *objectThatWasHit, int t);
 
         void Update_Sensor_Neurons(int t);
 

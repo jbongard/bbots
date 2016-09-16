@@ -1,4 +1,4 @@
-evaluationTime = 200
+evaluationTime = 300
 
 popSize = 50
 
@@ -40,5 +40,5 @@ NUM_MOTORS = 2
 
 NUM_ENVIRONMENTS = 4
 
-NUM_GENERATIONS = 100
+NUM_GENERATIONS = 200
 

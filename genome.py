@@ -47,7 +47,9 @@ class GENOME:
 
 	def End(self):
 
-		self.fitness = 0.0
+		self.fitness = 1000000.0
+
+		# self.fitness = 0.0
 
                 for e in range(0,c.NUM_ENVIRONMENTS):
 
@@ -56,6 +58,8 @@ class GENOME:
                 	self.sims[e].Wait_To_Finish()
 
 			self.Compute_Fitness()
+
+		self.fitness = -self.fitness
 
 		self.evaluated = True
 
@@ -147,7 +151,7 @@ class GENOME:
 
 		for h in range(0,c.NUM_HIDDEN_NEURONS):
 
-        		self.sim.Send_Hidden_Neuron(ID = c.NUM_SENSORS + h , layer = 1)
+        		self.sim.Send_Hidden_Neuron(ID = c.NUM_SENSORS + h , layer = 1, tau = 0.3)
 
         def Add_HM_Synapses(self):
 
@@ -274,8 +278,13 @@ class GENOME:
 
                                 sensorValues[1,t] = self.sim.Get_Sensor_Data(3,0,t)
 
+		fitnessInThisEnvironment = sum(sum(sensorValues))
 
-                self.fitness = self.fitness - sum(sum(sensorValues))
+		if ( fitnessInThisEnvironment < self.fitness ):
+
+			self.fitness = fitnessInThisEnvironment
+
+                # self.fitness = self.fitness - fitnessInThisEnvironment 
 
         def Connect_Back_Wheel_To_Chassis(self):
 
@@ -397,7 +406,7 @@ class GENOME:
 
         def Send_To_Sim(self,environmentIndex):
 
-                self.robotPosX = -c.OBSTACLE_WIDTH + (2.0 * environmentIndex * c.OBSTACLE_WIDTH) / ( c.NUM_ENVIRONMENTS - 1.0 )
+                self.robotPosX = -(3*c.OBSTACLE_WIDTH/2.0) + (environmentIndex * 3 * c.OBSTACLE_WIDTH) / ( c.NUM_ENVIRONMENTS - 1.0 )
 
                 self.robotPosY = -6.0 * c.OBSTACLE_LENGTH
 

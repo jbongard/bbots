@@ -12,9 +12,9 @@ class AFPO:
 
 	def __init__(self):
 
-                random.seed(0)
+                random.seed(1)
 
-                np.random.seed(0)
+                np.random.seed(1)
 
 		self.obstacles = OBSTACLES()
 
