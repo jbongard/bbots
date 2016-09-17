@@ -1,23 +1,24 @@
 # Braitenbots
 
-Step 1: Compile the Open Dynamics Engine (ODE) physics engine.
+Step 1: Run build.sh:
+```bash
+$ sh build.sh
+```
 
-- Navigate into the ode-0.12 directory.
+Takes 3-5 minutes. The output should look like this:
+```
+Downloading ode-0.12...done
+Unpacking ode-0.12.tar.bz2...done
+Building ode-0.12...done
+Building simulator...done
+```
 
-- Follow the instructions in INSTALL.txt to install ODE.
+Step 2: Launch Braitenbots
+```bash
+ python2.7 bbots.py
+```
 
-Step 2: Compile the ODE side of Pyrosim.
-
-- Return to the top-level directory.
-
-- Type
-
-> make
-
-Step 3: Launch Braitenbots 
-
-> python bbots.py 
-
-Step 4: Play back the best solution (at any time):
-
-> python playback.py
+Step 3: Play back the best solution (at any time):
+```bash
+> python2.7 playback.py
+```
