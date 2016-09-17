@@ -23,6 +23,8 @@ class GENOME:
 
 		self.hm = np.random.rand(c.NUM_HIDDEN_NEURONS,c.NUM_MOTORS) * 2 - 1
 
+		self.hiddenTaus = np.random.rand(c.NUM_HIDDEN_NEURONS) * 2 * c.MAX_HIDDEN_TAU - 1
+
         def Age(self):
 
                 self.age = self.age + 1
@@ -72,7 +74,7 @@ class GENOME:
 
 	def Mutate(self):
 
-		mutType = random.randint(0,2)
+		mutType = random.randint(0,3)
 
 		if ( mutType == 0 ):
 
@@ -82,8 +84,11 @@ class GENOME:
 
 			self.Mutate_HH()
 
-		else:
+		elif ( mutType == 2 ):
+
 			self.Mutate_HM()
+		else:
+			self.Mutate_Hidden_Taus()
 
         def Print(self):
 
@@ -151,7 +156,7 @@ class GENOME:
 
 		for h in range(0,c.NUM_HIDDEN_NEURONS):
 
-        		self.sim.Send_Hidden_Neuron(ID = c.NUM_SENSORS + h , layer = 1, tau = 0.3)
+        		self.sim.Send_Hidden_Neuron(ID = c.NUM_SENSORS + h , layer = 1, tau = self.hiddenTaus[h])
 
         def Add_HM_Synapses(self):
 
@@ -361,6 +366,20 @@ class GENOME:
                 j = random.randint(0,c.NUM_MOTORS-1)
 
                 self.hm[i,j] = random.gauss( self.hm[i,j] , math.fabs( self.hm[i,j] ) )
+
+	def Mutate_Hidden_Taus(self):
+
+		j = random.randint(0,c.NUM_HIDDEN_NEURONS-1)
+
+		self.hiddenTaus[j] = random.gauss( self.hiddenTaus[j] , math.fabs( self.hiddenTaus[j] )  )
+
+		if ( self.hiddenTaus[j] > c.MAX_HIDDEN_TAU ):
+
+			self.hiddenTaus[j] = c.MAX_HIDDEN_TAU
+
+		if ( self.hiddenTaus[j] < -c.MAX_HIDDEN_TAU ):
+
+			self.hiddenTaus[j] = -c.MAX_HIDDEN_TAU
 
 	def Send_Back_Wheel(self):
 
