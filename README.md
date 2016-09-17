@@ -14,10 +14,10 @@ Building simulator...done
 
 Step 2: Launch Braitenbots
 ```bash
- python2.7 bbots.py
+$ python2.7 bbots.py
 ```
 
 Step 3: Play back the best solution (at any time):
 ```bash
-> python2.7 playback.py
+$ python2.7 playback.py
 ```
