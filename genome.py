@@ -28,16 +28,20 @@ class GENOME:
 
 		self.hiddenTaus = np.random.rand(c.NUM_HIDDEN_NEURONS) * 2 * c.MAX_HIDDEN_TAU - 1
 
-		self.pins = PINS()
+		validCircuit = False
 
-		self.automaton = AUTOMATON()
+		while ( validCircuit == False ):
 
-		self.wires = WIRES()
+			self.pins = PINS()
 
-		self.automaton.Add_Wires(self.wires)
+                	self.wires = WIRES()
 
-		# success = self.wires.Add([0,0],[1,2],1,self.pins)
+			self.automaton = AUTOMATON()
 
+			self.automaton.Add_Wires(self.pins,self.wires)
+
+			validCircuit = self.wires.numWires > 2
+			
 		self.wires.Save()
 
 		exit()

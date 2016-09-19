@@ -16,27 +16,13 @@ class WIRES:
 
 	def Add(self,start,end,weight,pins):
 
-		if ( (start[0] < 0) or (end[0] < 0) ):
-
-			return False
-
-		if ( (start[0] >= c.PIN_COLUMNS) or (end[0] >= c.PIN_COLUMNS) ):
-
-			return False
-
-                if ( (start[1] < 0) or (end[1] < 0) ):
-
-                        return False
-
-                if ( (start[1] >= c.PIN_ROWS) or (end[1] >= c.PIN_ROWS) ):
-
-                        return False
-
-                if ( pins.Pin_Taken(end) ):
-
-                        return False
-
 		self.wires[self.numWires] = [start,end,weight]
+
+		pins.Occupy(start)
+
+		pins.Occupy(end)
+
+		print start, end
 
 		self.numWires = self.numWires + 1
 
@@ -55,6 +41,10 @@ class WIRES:
 		self.Draw_Wires(ax)
 
 	def Draw_Wires(self,ax):
+
+		col = np.random.rand(3)
+
+		lineWidth = 5 * self.numWires + 1
 	
 		for w in range(0,self.numWires):
 
@@ -66,7 +56,11 @@ class WIRES:
 
 			weight = wire[2]
 
-			plt.plot([start[0],end[0]],[c.PIN_ROWS-start[1],c.PIN_ROWS-end[1]],'r-')
+			plt.plot([start[0],end[0]],[c.PIN_ROWS-start[1],c.PIN_ROWS-end[1]],'r-',linewidth=lineWidth,color=col)
+
+			lineWidth = lineWidth - 5
+
+			col = col / 2
 
 		ax.set_xlim(-1 , c.PIN_COLUMNS)
 
@@ -83,6 +77,8 @@ class WIRES:
 		self = pickle.load(f)
 
 		f.close()
+
+		print self.numWires
 
 		return self
 
