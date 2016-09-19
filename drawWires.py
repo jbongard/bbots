@@ -4,12 +4,10 @@ from wires import WIRES
 import constants as c
 import matplotlib.pyplot as plt
 
-for i in range(0,1):
+wires = WIRES()
 
-	wires = WIRES()
+wires = wires.Load()
 
-	wires = wires.Load(i)
+wires.Draw()
 
-	wires.Draw(i)
-
-	plt.show()
+plt.show()

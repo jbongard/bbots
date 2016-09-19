@@ -42,9 +42,9 @@ class WIRES:
 
 		return True
 
-	def Draw(self,i):
+	def Draw(self):
 
-		fig = plt.figure(i+1)
+		fig = plt.figure(1)
 
 		ax = plt.subplot(111)
 
@@ -66,10 +66,6 @@ class WIRES:
 
 			weight = wire[2]
 
-			print start, end, weight
-
-			print start[0],end[0],start[1],end[1]
-
 			plt.plot([start[0],end[0]],[c.PIN_ROWS-start[1],c.PIN_ROWS-end[1]],'r-')
 
 		ax.set_xlim(-1 , c.PIN_COLUMNS)
@@ -80,9 +76,9 @@ class WIRES:
 
 		ax.set_yticks([])
 
-	def Load(self,i):
+	def Load(self):
 
-		f = open('wires'+str(i)+'.p','rb')
+		f = open('wires.p','rb')
 
 		self = pickle.load(f)
 
@@ -94,7 +90,7 @@ class WIRES:
 
 		print self.wires
 
-	def Save(self,i):
+	def Save(self):
 
 		f = open('tmp.p','wb')
 
@@ -102,4 +98,4 @@ class WIRES:
 
 		f.close()
 
-		os.rename('tmp.p','wires'+str(i)+'.p')
+		os.rename('tmp.p','wires.p')

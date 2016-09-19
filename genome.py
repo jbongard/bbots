@@ -2,6 +2,7 @@ import constants as c
 from pyrosim import PYROSIM
 from pins import PINS
 from wires import WIRES
+from automaton import AUTOMATON
 
 import random
 import numpy as np
@@ -29,13 +30,15 @@ class GENOME:
 
 		self.pins = PINS()
 
-		for i in range(0,9):
+		self.automaton = AUTOMATON()
 
-			self.wires = WIRES()
+		self.wires = WIRES()
 
-			success = self.wires.Add([0,0],[1,2],1,self.pins)
+		self.automaton.Add_Wires(self.wires)
 
-			self.wires.Save(i)
+		# success = self.wires.Add([0,0],[1,2],1,self.pins)
+
+		self.wires.Save()
 
 		exit()
 
