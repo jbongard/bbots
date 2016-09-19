@@ -10,27 +10,37 @@ class AUTOMATON:
 
 	def Add_Wires(self,pins,wires):
 
+		print ''
+
 		self.Set_Starting_Position()
 
-		success = self.Handle_Starting_Position()
+		self.success = self.Handle_Starting_Position(pins)
+
+		if ( self.success == False ):
+
+			return False
 
 		self.w = 0
 
-		while ( (self.w <  c.MAX_WIRES_PER_THREAD) and success ):
+		print 'valid starting position for wire ' + str(self.w)
 
-			success = self.Attempt_To_Create_Wire(pins,wires)
+		while ( (self.w <  c.MAX_WIRES_PER_THREAD) and self.success ):
 
-			if ( success ):
+			self.success = self.Attempt_To_Create_Wire(pins,wires)
+
+			if ( self.success ):
 
 				self.w = self.w + 1
 
 	def Attempt_To_Create_Wire(self,pins,wires):
 
-		self.Set_Direction()
+		success = self.Set_Direction()
 
-		if ( self.Valid_Direction() == False ):
+		if ( success == False ):
 
 			return False
+
+		print 'valid direction for wire ' + str(self.w)
 
 		self.Enforce_Forward_Movement()
 
@@ -80,6 +90,10 @@ class AUTOMATON:
 
 			self.yEnd = self.yStart
 
+        def End_Position_Equals_Start_Position(self):
+
+                return ( ( self.xStart == self.xEnd ) and ( self.yStart == self.yEnd ) )
+
 	def Enforce_Forward_Movement(self):
 
 		if ( self.direction == c.UP_LEFT ):
@@ -94,19 +108,7 @@ class AUTOMATON:
 
 			self.direction = c.DOWN_RIGHT
 
-        def Find_Available_Pin_In_Group(self,pins):
-
-		self.xEnd = random.randint(0,c.PIN_COLUMNS-1)
-
-		target = [ self.xEnd , self.yEnd ]
-
-		while ( pins.Pin_Taken(target) or (self.xEnd==self.xStart) ):
-
-			self.xEnd = random.randint(0,c.PIN_COLUMNS-1)
-
-                	target = [ self.xEnd , self.yEnd ]
-
-        def Handle_Ending_Position(self):
+        def Handle_Ending_Position(self,pins):
 
                 if ( pins.Invalid_Pin([self.xEnd,self.yEnd]) ):
 
@@ -122,13 +124,13 @@ class AUTOMATON:
                         else:
                                 self.endX = self.Move_X(self.endX)
 
-        			while ( self.Start_Position_Equals_End_Position(self) ):
+        			while ( self.End_Position_Equals_Start_Position(self) ):
 
-					self.endX = self.Move_X(self.endX)
+					self.endX = self.Move_X(self.endX,self.endY,pins)
 
-                                return True
+		return True
 
-        def Handle_Starting_Position(self):
+        def Handle_Starting_Position(self,pins):
 
                 if ( pins.Invalid_Pin([self.xStart,self.yStart]) ):
 
@@ -142,13 +144,25 @@ class AUTOMATON:
 
                                 return False
                         else:
-                                self.startX = self.Move_X(self.startX)
+                                self.startX = self.Move_X(self.startX,self.startY,pins)
 
-				return True
-	
+		return True
+
+	def Move_X(self,x,y,pins):
+
+		x = random.randint(0,c.PIN_COLUMNS-1)
+
+		while ( pins.Occupied_Pin([x,y]) ):
+
+			x = random.randint(0,c.PIN_COLUMNS-1)
+
+		return x
+ 
         def Set_Direction(self):
 
                 self.direction = self.path[self.w,2]
+
+		return self.Valid_Direction()
 
         def Set_Distance(self):
 
@@ -160,17 +174,13 @@ class AUTOMATON:
 
                 self.yStart = self.yEnd
 
-		return self.Handle_Starting_Position()
+		return self.Handle_Starting_Position(pins)
 
         def Set_Starting_Position(self):
 
                 self.xStart = self.path[0,0]
 
                 self.yStart = self.path[0,1]
-
-        def Start_Position_Equals_End_Position(self):
-
-                return ( ( self.xStart == self.xEnd ) and ( self.yStart == self.yEnd ) )
 
         def Valid_Direction(self):
 

@@ -28,6 +28,14 @@ class PINS:
 
                                 plt.text(j , c.PIN_ROWS - (c.NUM_SENSORS+c.NUM_HIDDEN_NEURONS+i) , 'M'+str(i)+','+str(j) )
 
+        def Invalid_Pin(self,target):
+
+                x = target[0]
+
+                y = target[1]
+
+		return ( (x<0) or (y<0) or (x>=c.PIN_COLUMNS) or (y>=c.PIN_ROWS) )
+
 	def Occupy(self,position):
 
 		x = position[0]
@@ -36,19 +44,19 @@ class PINS:
 
 		self.pinTaken[ y , x ] = 1 
 
+        def Occupied_Pin(self,target):
+
+                x = target[0]
+
+                y = target[1]
+
+                return ( self.pinTaken[y,x] == 1 )
+
 	def Pin_Group_Full(self,y):
 
 		numberOfTakenPins = sum( self.pinTaken[y,:] )
 
 		return ( numberOfTakenPins == c.PIN_COLUMNS )
-
-	def Pin_Taken(self,target):
-
-		x = target[0]
-
-                y = target[1]
-	
-		return ( self.pinTaken[y,x] == 1 )
 
 	def Print(self):
 
