@@ -1,44 +1,32 @@
 import constants as c
 import numpy as np
+import matplotlib.pyplot as plt
 
 class PINS:
 
         def __init__(self):
 
-		self.validPins = np.zeros([c.NUM_PINS,c.MAX_PINS_PER_ROW],dtype='d')
+		self.pinTaken = np.zeros([c.PIN_ROWS,c.PIN_COLUMNS],dtype='d')
 
-		self.validPins[c.BL,0:4] = 1
+	def Draw(self):
 
-                self.validPins[c.N1,0:7] = 1
-                self.validPins[c.N2,0:7] = 1
-                self.validPins[c.N3,0:7] = 1
+	        for i in range(0,c.NUM_SENSORS):
 
-                self.validPins[c.FL,0:4] = 1
+			for j  in range(0,c.PIN_COLUMNS):
 
-                self.validPins[c.N4,0:7] = 1
-                self.validPins[c.N5,0:7] = 1
-                self.validPins[c.N6,0:7] = 1
+        	        	plt.text(j , c.PIN_ROWS - i , 'S'+str(i)+','+str(j) )
 
-                self.validPins[c.BR,0:4] = 1
+                for i in range(0,c.NUM_HIDDEN_NEURONS):
 
-                self.validPins[c.PL,0:6] = 1
-                self.validPins[c.RL,0:6] = 1
-                self.validPins[c.RR,0:6] = 1
+                        for j  in range(0,c.PIN_COLUMNS):
 
-                self.validPins[c.FR,0:4] = 1
+                                plt.text(j , c.PIN_ROWS - (c.NUM_SENSORS+i) , 'H'+str(i)+','+str(j) )
 
-                self.validPins[c.PR,0:6] = 1
+                for i in range(0,c.NUM_MOTORS):
 
+                        for j  in range(0,c.PIN_COLUMNS):
 
-		self.pinTaken = np.zeros([c.NUM_PINS,c.MAX_PINS_PER_ROW],dtype='d')
-
-        def Pin_Invalid(self,target):
-
-		x = target[0]
-
-		y = target[1]
-
-		return self.validPins[y,x] == 0
+                                plt.text(j , c.PIN_ROWS - (c.NUM_SENSORS+c.NUM_HIDDEN_NEURONS+i) , 'M'+str(i)+','+str(j) )
 
 	def Pin_Taken(self,target):
 
@@ -46,4 +34,4 @@ class PINS:
 
                 y = target[1]
 	
-		return self.pinTaken[y,x] == 1	
+		return ( self.pinTaken[y,x] == 1 )

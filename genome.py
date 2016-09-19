@@ -27,15 +27,17 @@ class GENOME:
 
 		self.hiddenTaus = np.random.rand(c.NUM_HIDDEN_NEURONS) * 2 * c.MAX_HIDDEN_TAU - 1
 
-		#self.pins = PINS()
+		self.pins = PINS()
 
-		#self.wires = WIRES()
+		for i in range(0,9):
 
-		#success = self.wires.Add([0,0],[1,2],1,self.pins)
+			self.wires = WIRES()
 
-		#self.wires.Save()
+			success = self.wires.Add([0,0],[1,2],1,self.pins)
 
-		#exit()
+			self.wires.Save(i)
+
+		exit()
 
         def Age(self):
 
