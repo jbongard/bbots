@@ -72,7 +72,7 @@ class ROBOT:
 
 		for h in range(0,c.NUM_HIDDEN_NEURONS):
 
-        		self.sim.Send_Hidden_Neuron(ID = c.NUM_SENSORS + h , layer = 1)
+        		self.sim.Send_Hidden_Neuron(ID = c.NUM_SENSORS + h , layer = 1, tau = 0.3)
 
         def Add_HM_Synapses(self):
 

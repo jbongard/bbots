@@ -1,5 +1,7 @@
 import constants as c
 from pyrosim import PYROSIM
+from pins import PINS
+from wires import WIRES
 
 import random
 import numpy as np
@@ -24,6 +26,16 @@ class GENOME:
 		self.hm = np.random.rand(c.NUM_HIDDEN_NEURONS,c.NUM_MOTORS) * 2 - 1
 
 		self.hiddenTaus = np.random.rand(c.NUM_HIDDEN_NEURONS) * 2 * c.MAX_HIDDEN_TAU - 1
+
+		#self.pins = PINS()
+
+		#self.wires = WIRES()
+
+		#success = self.wires.Add([0,0],[1,2],1,self.pins)
+
+		#self.wires.Save()
+
+		#exit()
 
         def Age(self):
 

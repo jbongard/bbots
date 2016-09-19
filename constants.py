@@ -44,3 +44,22 @@ NUM_MOTORS = 2
 
 MAX_HIDDEN_TAU = 0.3
 
+
+BL = 0
+N1 = 1
+N2 = 2
+N3 = 3
+FL = 4
+N4 = 5
+N5 = 6
+N6 = 7 
+BR = 8
+PL = 9
+RL = 10
+RR = 11
+FR = 12
+PR = 13
+
+NUM_PIN_GROUP_ROWS = 14
+
+MAX_PINS_PER_ROW = 7
