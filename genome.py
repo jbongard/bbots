@@ -1,7 +1,7 @@
 import constants as c
 from pyrosim import PYROSIM
 from pins import PINS
-from wires import WIRES
+from threads import THREADS
 from automaton import AUTOMATON
 
 import random
@@ -34,15 +34,21 @@ class GENOME:
 
 			self.pins = PINS()
 
-                	self.wires = WIRES()
+			self.threads = THREADS()
 
-			self.automaton = AUTOMATON()
+			for t in range(0,c.MAX_THREADS):
+	
+				self.automaton = AUTOMATON()
 
-			self.automaton.Add_Wires(self.pins,self.wires)
+				self.automaton.Add_Thread(self.pins,self.threads)
 
-			validCircuit = self.wires.numWires > 2
-			
-		self.wires.Save()
+			validCircuit = self.threads.Contains_Max_Thread_Length() 
+	
+			if ( validCircuit ):
+
+				self.threads.Print()
+	
+				self.threads.Save()
 
 		exit()
 

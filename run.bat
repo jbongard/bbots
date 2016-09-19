@@ -1,2 +1,3 @@
 python bbots.py
-python drawWires.py
+
+python drawThreads.py

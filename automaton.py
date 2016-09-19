@@ -1,6 +1,7 @@
 import numpy as np
 import constants as c
 import random
+from wires import WIRES
 
 class AUTOMATON:
 
@@ -8,7 +9,9 @@ class AUTOMATON:
 
 		self.path = np.random.randint(0,10,[c.MAX_WIRES_PER_THREAD,4])
 
-	def Add_Wires(self,pins,wires):
+	def Add_Thread(self,pins,threads):
+
+		thread = WIRES()
 
 		print ''
 
@@ -22,17 +25,17 @@ class AUTOMATON:
 
 		self.w = 0
 
-		print 'valid starting position for wire ' + str(self.w)
-
 		while ( (self.w <  c.MAX_WIRES_PER_THREAD) and self.success ):
 
-			self.success = self.Attempt_To_Create_Wire(pins,wires)
+			self.success = self.Attempt_To_Create_Wire(pins,thread)
 
 			if ( self.success ):
 
 				self.w = self.w + 1
 
-	def Attempt_To_Create_Wire(self,pins,wires):
+		threads.Append(thread)
+
+	def Attempt_To_Create_Wire(self,pins,thread):
 
 		success = self.Set_Direction()
 
@@ -40,21 +43,19 @@ class AUTOMATON:
 
 			return False
 
-		print 'valid direction for wire ' + str(self.w)
-
 		self.Enforce_Forward_Movement()
 
 		self.Set_Distance()
 
 		self.Compute_Target_Position()
 
-		success = self.Handle_Ending_Position()
+		success = self.Handle_Ending_Position(pins)
 
 		if ( success == False ):
 
 			return False
 	 
-		wires.Add([self.xStart,self.yStart],[self.xEnd,self.yEnd],1,pins)
+		thread.Add_Wire([self.xStart,self.yStart],[self.xEnd,self.yEnd],1,pins)
 
 		return self.Set_Next_Position(pins)
 
@@ -114,7 +115,7 @@ class AUTOMATON:
 
                         return False
 
-                if ( pins.Occupied_Pin([self.xEnd,self.yEnd]) ):
+                if ( pins.Occupied_Pin([self.xEnd,self.yEnd]) or self.End_Position_Equals_Start_Position() ):
 
                         # return False # for destructive interaction case
 
@@ -122,11 +123,11 @@ class AUTOMATON:
 
                                 return False
                         else:
-                                self.endX = self.Move_X(self.endX)
+                                self.xEnd = self.Move_X(self.xEnd,self.yEnd,pins)
 
-        			while ( self.End_Position_Equals_Start_Position(self) ):
+        			while ( self.End_Position_Equals_Start_Position() ):
 
-					self.endX = self.Move_X(self.endX,self.endY,pins)
+					self.xEnd = self.Move_X(self.xEnd,self.yEnd,pins)
 
 		return True
 
@@ -144,7 +145,7 @@ class AUTOMATON:
 
                                 return False
                         else:
-                                self.startX = self.Move_X(self.startX,self.startY,pins)
+                                self.xStart = self.Move_X(self.xStart,self.yStart,pins)
 
 		return True
 

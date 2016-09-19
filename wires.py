@@ -14,15 +14,13 @@ class WIRES:
 
 		self.numWires = 0
 
-	def Add(self,start,end,weight,pins):
+	def Add_Wire(self,start,end,weight,pins):
 
 		self.wires[self.numWires] = [start,end,weight]
 
 		pins.Occupy(start)
 
 		pins.Occupy(end)
-
-		print start, end
 
 		self.numWires = self.numWires + 1
 
@@ -60,7 +58,7 @@ class WIRES:
 
 			lineWidth = lineWidth - 5
 
-			col = col / 2
+			col = col / 1.3
 
 		ax.set_xlim(-1 , c.PIN_COLUMNS)
 
@@ -70,6 +68,10 @@ class WIRES:
 
 		ax.set_yticks([])
 
+	def Get_Length(self):
+
+		return self.numWires
+
 	def Load(self):
 
 		f = open('wires.p','rb')
@@ -77,8 +79,6 @@ class WIRES:
 		self = pickle.load(f)
 
 		f.close()
-
-		print self.numWires
 
 		return self
 
