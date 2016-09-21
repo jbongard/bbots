@@ -13,8 +13,6 @@ class AUTOMATON:
 
 		thread = WIRES()
 
-		print ''
-
 		self.Set_Starting_Position()
 
 		self.success = self.Handle_Starting_Position(pins)
@@ -33,7 +31,9 @@ class AUTOMATON:
 
 				self.w = self.w + 1
 
-		threads.Append(thread)
+		if ( thread.numWires > 0 ):
+
+			threads.Append(thread)
 
 	def Attempt_To_Create_Wire(self,pins,thread):
 
@@ -119,7 +119,13 @@ class AUTOMATON:
 
                         # return False # for destructive interaction case
 
-                        if ( pins.Pin_Group_Full(self.yEnd) ):
+			minimumFreePins = 1
+
+			if ( self.Start_And_End_On_Same_Row() ):
+
+				minimumFreePins = 2
+
+                        if ( pins.Free_Pins_In_Row(self.yEnd) < minimumFreePins ):
 
                                 return False
                         else:
@@ -182,6 +188,10 @@ class AUTOMATON:
                 self.xStart = self.path[0,0]
 
                 self.yStart = self.path[0,1]
+
+	def Start_And_End_On_Same_Row(self):
+
+		return ( self.yEnd == self.yStart )
 
         def Valid_Direction(self):
 

@@ -52,9 +52,17 @@ class WIRES:
 
 			end = wire[1]
 
+			xStart = start[0]
+			yStart = start[1]
+
+			xEnd   = end[0]
+			yEnd   = end[1]
+
 			weight = wire[2]
 
-			plt.plot([start[0],end[0]],[c.PIN_ROWS-start[1],c.PIN_ROWS-end[1]],'r-',linewidth=lineWidth,color=col)
+			print yStart, yEnd
+
+			plt.plot([xStart,xEnd],[c.PIN_ROWS-yStart,c.PIN_ROWS-yEnd],'r-',linewidth=lineWidth,color=col)
 
 			lineWidth = lineWidth - 5
 
@@ -67,6 +75,24 @@ class WIRES:
 		ax.set_xticks([])
 
 		ax.set_yticks([])
+
+	def From_Sensor_To_Motor(self,w):
+
+		wire = self.wires[w]
+
+		start = wire[0]
+
+		end = wire[1]
+
+		startY = start[1]
+
+		endY = end[1]
+
+		fromSensor = ( startY < c.NUM_SENSORS )
+
+		toMotor = ( endY >= (c.NUM_SENSORS + c.NUM_HIDDEN_NEURONS) )
+
+		return ( fromSensor and toMotor ) 
 
 	def Get_Length(self):
 
@@ -82,9 +108,9 @@ class WIRES:
 
 		return self
 
-	def Print(self):
+	def Print(self,w):
 
-		print self.wires
+		print self.wires[w]
 
 	def Save(self):
 

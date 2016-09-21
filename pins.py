@@ -28,6 +28,14 @@ class PINS:
 
                                 plt.text(j , c.PIN_ROWS - (c.NUM_SENSORS+c.NUM_HIDDEN_NEURONS+i) , 'M'+str(i)+','+str(j) )
 
+	def Free_Pins_In_Row(self,y):
+
+		numOccupiedPins = sum( self.pinTaken[y,:] )
+
+		numFreePins = c.PIN_COLUMNS - numOccupiedPins
+
+		return numFreePins
+
         def Invalid_Pin(self,target):
 
                 x = target[0]

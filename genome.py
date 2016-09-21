@@ -3,6 +3,7 @@ from pyrosim import PYROSIM
 from pins import PINS
 from threads import THREADS
 from automaton import AUTOMATON
+from ann import ANN
 
 import random
 import numpy as np
@@ -28,33 +29,45 @@ class GENOME:
 
 		self.hiddenTaus = np.random.rand(c.NUM_HIDDEN_NEURONS) * 2 * c.MAX_HIDDEN_TAU - 1
 
-		validCircuit = False
+		self.Create_Valid_Circuit()
 
-		while ( validCircuit == False ):
+		self.threads.Print()
 
-			self.pins = PINS()
+		self.threads.Save()
 
-			self.threads = THREADS()
+		# self.ann = ANN()
 
-			for t in range(0,c.MAX_THREADS):
-	
-				self.automaton = AUTOMATON()
-
-				self.automaton.Add_Thread(self.pins,self.threads)
-
-			validCircuit = self.threads.Contains_Max_Thread_Length() 
-	
-			if ( validCircuit ):
-
-				self.threads.Print()
-	
-				self.threads.Save()
+		# self.ann.Convert_Threads_To_ANN(self.threads)
 
 		exit()
 
         def Age(self):
 
                 self.age = self.age + 1
+
+        def Attempt_To_Create_Valid_Circuit(self):
+
+                self.pins = PINS()
+
+                self.threads = THREADS()
+
+                for t in range(0,c.MAX_THREADS):
+
+                        self.automaton = AUTOMATON()
+
+                        self.automaton.Add_Thread(self.pins,self.threads)
+
+                # return ( self.threads.Num_Threads() > 2 )  
+
+		return ( self.threads.Contains_Wire_From_Sensor_To_Motor() )
+
+        def Create_Valid_Circuit(self):
+
+		validCircuit = False
+
+		while ( validCircuit == False ):
+
+			validCircuit = self.Attempt_To_Create_Valid_Circuit()
 
         def Dominates(self,other):
 

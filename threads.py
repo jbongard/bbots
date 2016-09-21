@@ -30,6 +30,23 @@ class THREADS:
 
 		return ( longestThreadLength == c.MAX_WIRES_PER_THREAD )
 
+	def Contains_Wire_From_Sensor_To_Motor(self):
+
+		found = False
+
+                for t in range(0,self.numThreads):
+
+                        wires = self.threads[t]
+
+                        for w in range(0,wires.numWires):
+
+                                if ( wires.From_Sensor_To_Motor(w) ):
+
+					found = True
+
+		return found 
+
+
 	def Draw(self):
 
 		for t in range(0,self.numThreads):
@@ -46,9 +63,19 @@ class THREADS:
 
                 return self
 
+	def Num_Threads(self):
+
+		return self.numThreads
+
 	def Print(self):
 
-		print self.numThreads
+		print 'num threads: ' + str(self.numThreads)
+
+		for t in range(0,self.numThreads):
+
+			print 'thread'+str(t)+': '+ str(self.threads[t].numWires)
+
+			#self.threads[t].Print()
 
         def Save(self):
 
