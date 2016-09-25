@@ -11,9 +11,11 @@ extern int SENSOR_NEURON;
 
 extern int BIAS_NEURON;
 
-NEURON::NEURON(int myID, int neuronType, int layer, double tau) {
+extern int TANH_TRANSFER_FUNCTION;
 
-	Initialize(myID,neuronType,layer,tau);
+NEURON::NEURON(int myID, int neuronType, int layer, double tau, int transferFunction) {
+
+	Initialize(myID,neuronType,layer,tau,transferFunction);
 
 	if ( type == BIAS_NEURON )
 
@@ -22,7 +24,7 @@ NEURON::NEURON(int myID, int neuronType, int layer, double tau) {
 
 NEURON::NEURON(int myID, int neuronType, int svIndex, int layer, double tau) {
 
-	Initialize(myID,neuronType,layer,tau);
+	Initialize(myID,neuronType,layer,tau,TANH_TRANSFER_FUNCTION);
 	
 	sensorValueIndex = svIndex;
 }
@@ -103,12 +105,16 @@ void NEURON::Threshold(void) {
 
 		return;
 
-	value = tanh(value);
+	if ( transferFunction == TANH_TRANSFER_FUNCTION )
+
+		value = tanh(value);
+
+	// Otherwise, it is the identity function and nothing needs to be done.
 }
 
 // ------------------ Private methods -------------------
 
-void NEURON::Initialize(int myID, int neuronType, int l, double t) {
+void NEURON::Initialize(int myID, int neuronType, int l, double t, int tr) {
 
         ID = myID;
 
@@ -119,6 +125,8 @@ void NEURON::Initialize(int myID, int neuronType, int l, double t) {
 	layer = l;
 
 	tau = t;
+
+	transferFunction = tr;
 
         value = 0.0;
 

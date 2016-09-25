@@ -5,9 +5,9 @@ from wires import WIRES
 
 class AUTOMATON:
 
-        def __init__(self):
+        def __init__(self,path):
 
-		self.path = np.random.randint(0,10,[c.MAX_WIRES_PER_THREAD,4])
+		self.path = path 
 
 	def Add_Thread(self,pins,threads):
 
@@ -55,7 +55,7 @@ class AUTOMATON:
 
 			return False
 	 
-		thread.Add_Wire([self.xStart,self.yStart],[self.xEnd,self.yEnd],1,pins)
+		thread.Add_Wire([self.xStart,self.yStart],[self.xEnd,self.yEnd],self.Get_Weight(),pins)
 
 		return self.Set_Next_Position(pins)
 
@@ -108,6 +108,47 @@ class AUTOMATON:
 		if ( self.direction == c.UP_RIGHT ):
 
 			self.direction = c.DOWN_RIGHT
+
+        def Get_Weight(self):
+
+		if ( self.path[self.w,4] == 0 ):
+
+			return -0.5
+
+                elif ( self.path[self.w,4] == 1 ):
+
+                        return -0.4
+
+                elif ( self.path[self.w,4] == 2 ):
+
+                        return -0.3
+
+                elif ( self.path[self.w,4] == 3 ):
+
+                        return -0.2
+
+                elif ( self.path[self.w,4] == 4 ):
+
+                        return -0.1
+
+                elif ( self.path[self.w,4] == 5 ):
+
+                        return +0.1
+
+                elif ( self.path[self.w,4] == 6 ):
+
+                        return +0.2
+
+                elif ( self.path[self.w,4] == 7 ):
+
+                        return +0.3
+
+                elif ( self.path[self.w,4] == 8 ):
+
+                        return +0.4
+
+                else:
+                        return +0.5
 
         def Handle_Ending_Position(self,pins):
 

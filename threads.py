@@ -30,6 +30,54 @@ class THREADS:
 
 		return ( longestThreadLength == c.MAX_WIRES_PER_THREAD )
 
+        def Contains_Wire_From_Hidden_To_Hidden(self):
+
+                found = False
+
+                for t in range(0,self.numThreads):
+
+                        wires = self.threads[t]
+
+                        for w in range(0,wires.numWires):
+
+                                if ( wires.From_Hidden_To_Hidden(w) ):
+
+                                        found = True
+
+                return found
+
+        def Contains_Wire_From_Hidden_To_Motor(self):
+
+                found = False
+
+                for t in range(0,self.numThreads):
+
+                        wires = self.threads[t]
+
+                        for w in range(0,wires.numWires):
+
+                                if ( wires.From_Hidden_To_Motor(w) ):
+
+                                        found = True
+
+                return found
+
+        def Contains_Wire_From_Sensor_To_Hidden(self):
+
+                found = False
+
+                for t in range(0,self.numThreads):
+
+                        wires = self.threads[t]
+
+                        for w in range(0,wires.numWires):
+
+                                if ( wires.From_Sensor_To_Hidden(w) ):
+
+                                        found = True
+
+                return found
+
 	def Contains_Wire_From_Sensor_To_Motor(self):
 
 		found = False

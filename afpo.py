@@ -1,34 +1,31 @@
-from genome import GENOME
-import constants
-from obstacles import OBSTACLES
-
-import copy
-import random
-import numpy as np
-import copy
 import sys
+from obstacles import OBSTACLES
+import constants
+from genome import GENOME
+import random
+import copy
 
 class AFPO:
 
-	def __init__(self):
+        def __init__(self):
 
-                #random.seed(3)
+                #random.seed(0)
 
-                #np.random.seed(3)
+                #np.random.seed(0)
 
-		self.obstacles = OBSTACLES()
+                self.obstacles = OBSTACLES()
 
-		self.genomes = {}
+                self.genomes = {}
 
-		self.nextAvailableID = 0
+                self.nextAvailableID = 0
 
                 self.numNonDominated = 0
 
-		for g in range(0,constants.popSize):
+                for g in range(0,constants.popSize):
 
-			self.genomes[g] = GENOME(self.nextAvailableID)
+                        self.genomes[g] = GENOME(self.nextAvailableID)
 
-			self.nextAvailableID = self.nextAvailableID + 1
+                        self.nextAvailableID = self.nextAvailableID + 1
 
         def Evolve(self):
 
@@ -42,7 +39,7 @@ class AFPO:
 
 # -------------- Private methods -----------------------
 
-        def Advance_One_Generation(self):
+	def Advance_One_Generation(self):
 
                 self.Find_Pareto_Front()
 
@@ -51,6 +48,8 @@ class AFPO:
                 self.Count_NonDominated_Solutions()
 
 		self.Sort_NonDominated_By_Fitness()
+
+		self.Print_Best()
 
 		self.Save_Best()
 
@@ -153,6 +152,10 @@ class AFPO:
 				self.genomes[g].Print()		
 
 		print ''
+
+	def Print_Best(self):
+
+		self.genomes[0].ann.Print()
 
 	def Save_Best(self):
 

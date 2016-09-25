@@ -21,25 +21,7 @@ class GENOME:
 
 		self.evaluated = False
 
-		self.sh = np.random.rand(c.NUM_SENSORS,c.NUM_HIDDEN_NEURONS) * 2 - 1
-
-                self.hh = np.random.rand(c.NUM_HIDDEN_NEURONS,c.NUM_HIDDEN_NEURONS) * 2 - 1
-
-		self.hm = np.random.rand(c.NUM_HIDDEN_NEURONS,c.NUM_MOTORS) * 2 - 1
-
-		self.hiddenTaus = np.random.rand(c.NUM_HIDDEN_NEURONS) * 2 * c.MAX_HIDDEN_TAU - 1
-
-		self.Create_Valid_Circuit()
-
-		self.threads.Print()
-
-		self.threads.Save()
-
-		# self.ann = ANN()
-
-		# self.ann.Convert_Threads_To_ANN(self.threads)
-
-		exit()
+		self.paths = np.random.randint(0,10,[c.MAX_THREADS,c.MAX_WIRES_PER_THREAD,c.NUM_PARAMETERS_PER_WIRE]) 
 
         def Age(self):
 
@@ -53,13 +35,25 @@ class GENOME:
 
                 for t in range(0,c.MAX_THREADS):
 
-                        self.automaton = AUTOMATON()
+                        self.automaton = AUTOMATON(self.paths[t,:,:])
 
                         self.automaton.Add_Thread(self.pins,self.threads)
 
                 # return ( self.threads.Num_Threads() > 2 )  
 
-		return ( self.threads.Contains_Wire_From_Sensor_To_Motor() )
+		# return self.threads.Contains_Wire_From_Sensor_To_Motor()
+
+		# return self.threads.Contains_Wire_From_Hidden_To_Hidden()
+
+		# return self.threads.Contains_Wire_From_Hidden_To_Motor()
+
+		# sh = self.threads.Contains_Wire_From_Sensor_To_Hidden()
+
+		# hm = self.threads.Contains_Wire_From_Hidden_To_Motor()
+
+		# return ( sh and hm )
+
+		return True
 
         def Create_Valid_Circuit(self):
 
@@ -89,6 +83,12 @@ class GENOME:
 
 	def End(self):
 
+		# self.End_Simulation()
+
+                self.fitness = -self.ann.Number_Of_Synapses()
+
+	def End_Simulation(self):
+
 		self.fitness = 1000000.0
 
 		# self.fitness = 0.0
@@ -114,21 +114,13 @@ class GENOME:
 
 	def Mutate(self):
 
-		mutType = random.randint(0,3)
+		i = random.randint(0,c.MAX_THREADS-1)
 
-		if ( mutType == 0 ):
+		j = random.randint(0,c.MAX_WIRES_PER_THREAD-1)
 
-			self.Mutate_SH()
+		k = random.randint(0,c.NUM_PARAMETERS_PER_WIRE-1)
 
-		elif ( mutType == 1 ):
-
-			self.Mutate_HH()
-
-		elif ( mutType == 2 ):
-
-			self.Mutate_HM()
-		else:
-			self.Mutate_Hidden_Taus()
+		self.paths[i,j,k] = random.randint(0,9)
 
         def Print(self):
 
@@ -164,21 +156,33 @@ class GENOME:
 
                 self.dominated = dominated
 
-        def Start(self,obstacles,playBlind,playPaused):
+	def Simulate(self,obstacles,playBlind,playPaused):
 
                 self.sims = {}
 
                 for e in range(0,c.NUM_ENVIRONMENTS):
 
-                        self.sims[e] = PYROSIM(playBlind=playBlind,playPaused=playPaused)
+			self.sims[e] = PYROSIM(playBlind=playBlind,playPaused=playPaused)
 
-                        self.sim = self.sims[e]
+			self.sim = self.sims[e]
 
-                        self.Send_To_Sim(e)
+			self.Send_To_Sim(e)
 
-                        obstacles.Send_To_Sim(self.sims[e])
+			obstacles.Send_To_Sim(self.sims[e])
 
-                        self.sims[e].Start()
+			self.sims[e].Start()
+
+        def Start(self,obstacles,playBlind,playPaused):
+
+                #self.threads.Save()
+
+                self.ann = ANN()
+
+                self.Create_Valid_Circuit()
+
+                self.ann.Convert_Threads_To_Synapses(self.threads)
+
+		#self.Simulate(obstacles,playBlind,playPaused)
 
 # ------------------- Private methods ------------------------
 
@@ -188,15 +192,21 @@ class GENOME:
 
                         for h2 in range(0,c.NUM_HIDDEN_NEURONS):
 
-                                wt = self.hh[h1,h2]
+                                wt = self.ann.Get_HH_Weight(h1,h2) 
 
-                                self.sim.Send_Synapse(sourceNeuronIndex = c.NUM_SENSORS + h1 , targetNeuronIndex = c.NUM_SENSORS + h2 , weight = wt )
+				if ( wt != 0.0 ):
+
+                                	self.sim.Send_Synapse(sourceNeuronIndex = c.NUM_SENSORS + h1 , targetNeuronIndex = c.NUM_SENSORS + h2 , weight = wt )
 
 	def Add_Hidden_Neurons(self):
 
 		for h in range(0,c.NUM_HIDDEN_NEURONS):
 
-        		self.sim.Send_Hidden_Neuron(ID = c.NUM_SENSORS + h , layer = 1, tau = self.hiddenTaus[h])
+        		self.sim.Send_Hidden_Neuron(ID = c.NUM_SENSORS + h , layer = 1, tau = c.MAX_HIDDEN_TAU)
+
+		for h in range(0,self.ann.additionalHiddenNeurons ):
+
+			self.sim.Send_Hidden_Neuron(ID = c.NUM_SENSORS + c.NUM_HIDDEN_NEURONS + h , layer = 1, tau = c.MAX_HIDDEN_TAU, transferFunction = c.IDENTITY_TRANSFER_FUNCTION)
 
         def Add_HM_Synapses(self):
 
@@ -204,9 +214,11 @@ class GENOME:
 
                         for m in range(0,c.NUM_MOTORS):
 
-                                wt = self.hm[h,m]
+                                wt = self.ann.Get_HM_Weight(h,m) 
 
-                                self.sim.Send_Synapse(sourceNeuronIndex = c.NUM_SENSORS + h , targetNeuronIndex = c.NUM_SENSORS + c.NUM_HIDDEN_NEURONS + m , weight = wt )
+				if ( wt != 0.0 ):
+
+                                	self.sim.Send_Synapse(sourceNeuronIndex = c.NUM_SENSORS + h , targetNeuronIndex = c.NUM_SENSORS + c.NUM_HIDDEN_NEURONS + self.ann.additionalHiddenNeurons + m , weight = wt )
 
 	def Add_Infrared_Sensors(self):
 
@@ -246,7 +258,7 @@ class GENOME:
 
 		for m in range(0,c.NUM_MOTORS):
 
-			self.sim.Send_Motor_Neuron(ID = c.NUM_SENSORS + c.NUM_HIDDEN_NEURONS + m , jointID = m , layer = 2 , tau = c.MAX_ACCELERATION)
+			self.sim.Send_Motor_Neuron(ID = c.NUM_SENSORS + c.NUM_HIDDEN_NEURONS + self.ann.additionalHiddenNeurons + m , jointID = m , layer = 2 , tau = c.MAX_ACCELERATION)
 
         def Add_Right_Infrared_Sensor(self):
 
@@ -282,18 +294,45 @@ class GENOME:
 
                         for h in range(0,c.NUM_HIDDEN_NEURONS):
 
-                                wt = self.sh[s,h]
+                                wt = self.ann.Get_SH_Weight(s,h)
 
-                                self.sim.Send_Synapse(sourceNeuronIndex = s , targetNeuronIndex = c.NUM_SENSORS + h , weight = wt )
+				if ( wt != 0.0 ):
+
+                                	self.sim.Send_Synapse(sourceNeuronIndex = s , targetNeuronIndex = c.NUM_SENSORS + h , weight = wt )
+
+	def Add_SM_Synapses(self):
+
+		currentAdditionalHiddenNeuron = 0
+
+		for s in range(0,c.NUM_SENSORS):
+
+			for m in range(0,c.NUM_MOTORS):
+
+				wt = self.ann.Get_SM_Weight(s,m)
+
+				if ( wt != 0.0 ):
+
+					sIndex = s
+
+					hIndex = c.NUM_SENSORS + c.NUM_HIDDEN_NEURONS + currentAdditionalHiddenNeuron
+
+					mIndex = c.NUM_SENSORS + c.NUM_HIDDEN_NEURONS + self.ann.additionalHiddenNeurons + m
+
+					self.sim.Send_Synapse(sourceNeuronIndex = sIndex , targetNeuronIndex = hIndex , weight = wt)
+
+					self.sim.Send_Synapse(sourceNeuronIndex = hIndex , targetNeuronIndex = mIndex , weight = 1.0)
+
+					currentAdditionalHiddenNeuron = currentAdditionalHiddenNeuron + 1
 
 	def Add_Synapses(self):
 
 		self.Add_SH_Synapses()
 
+                self.Add_SM_Synapses()
+
 		self.Add_HH_Synapses()
 
 		self.Add_HM_Synapses()
-
 
 	def Add_Touch_Sensors(self):
 
@@ -379,47 +418,12 @@ class GENOME:
         def Create_Brain(self):
 
                 self.Add_Sensor_Neurons()
+
                 self.Add_Hidden_Neurons()
+
                 self.Add_Motor_Neurons()
+
                 self.Add_Synapses()
-
-        def Mutate_SH(self):
-
-                i = random.randint(0,c.NUM_SENSORS-1)
-
-                j = random.randint(0,c.NUM_HIDDEN_NEURONS-1)
-
-                self.sh[i,j] = random.gauss( self.sh[i,j] , math.fabs( self.sh[i,j] ) )
-
-        def Mutate_HH(self):
-
-                i = random.randint(0,c.NUM_HIDDEN_NEURONS-1)
-
-                j = random.randint(0,c.NUM_HIDDEN_NEURONS-1)
-
-                self.hh[i,j] = random.gauss( self.hh[i,j] , math.fabs( self.hh[i,j] ) )
-
-        def Mutate_HM(self):
-
-                i = random.randint(0,c.NUM_HIDDEN_NEURONS-1)
-
-                j = random.randint(0,c.NUM_MOTORS-1)
-
-                self.hm[i,j] = random.gauss( self.hm[i,j] , math.fabs( self.hm[i,j] ) )
-
-	def Mutate_Hidden_Taus(self):
-
-		j = random.randint(0,c.NUM_HIDDEN_NEURONS-1)
-
-		self.hiddenTaus[j] = random.gauss( self.hiddenTaus[j] , math.fabs( self.hiddenTaus[j] )  )
-
-		if ( self.hiddenTaus[j] > c.MAX_HIDDEN_TAU ):
-
-			self.hiddenTaus[j] = c.MAX_HIDDEN_TAU
-
-		if ( self.hiddenTaus[j] < -c.MAX_HIDDEN_TAU ):
-
-			self.hiddenTaus[j] = -c.MAX_HIDDEN_TAU
 
 	def Send_Back_Wheel(self):
 

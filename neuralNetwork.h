@@ -33,7 +33,7 @@ public:
 
 	void   Add_Bias_Neuron(int ID, int layer);
 
-	void   Add_Hidden_Neuron(int ID, int layer, double tau);
+	void   Add_Hidden_Neuron(int ID, int layer, double tau, int transferFunction);
 
 	NEURON *Add_Motor_Neuron(int ID, int layer, double tau);
 

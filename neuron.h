@@ -18,9 +18,11 @@ private:
 	int layer;
 
 	double tau;
+
+	int transferFunction;
 	
 public:
-        NEURON(int myID, int neuronType, int layer, double tau);
+        NEURON(int myID, int neuronType, int layer, double tau, int transferFunction);
 
 	NEURON(int myID, int neuronType, int svIndex, int layer, double tau);
 
@@ -51,7 +53,7 @@ public:
 	void Threshold(void);
 
 private:
-	void Initialize(int myID, int neuronType, int l, double t);
+	void Initialize(int myID, int neuronType, int l, double t, int tr);
 
 };
 

@@ -118,7 +118,7 @@ class PYROSIM:
 
                 self.Send(outputString)
 
-	def Send_Hidden_Neuron(self, ID = 0 , layer = 0 , tau = 1.0 ):
+	def Send_Hidden_Neuron(self, ID = 0 , layer = 0 , tau = 1.0 , transferFunction = constants.TANH_TRANSFER_FUNCTION):
 
 		outputString = 'HiddenNeuron'
 
@@ -127,6 +127,8 @@ class PYROSIM:
                 outputString = outputString + ' ' + str(layer)
 
                 outputString = outputString + ' ' + str(tau)
+
+                outputString = outputString + ' ' + str(transferFunction)
 
                 outputString = outputString + '\n'
 

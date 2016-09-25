@@ -19,6 +19,8 @@ extern int HIDDEN_NEURON;
 
 extern int MOTOR_NEURON;
 
+extern int TANH_TRANSFER_FUNCTION;
+
 NEURAL_NETWORK::NEURAL_NETWORK(void) {
 
 	numLayers = 1;
@@ -42,7 +44,7 @@ NEURAL_NETWORK::~NEURAL_NETWORK(void) {
 
 void NEURAL_NETWORK::Add_Bias_Neuron(int ID, int layer) {
 
-        neurons[numNeurons] = new NEURON(ID,BIAS_NEURON,layer,1.0);
+        neurons[numNeurons] = new NEURON(ID,BIAS_NEURON,layer,1.0,TANH_TRANSFER_FUNCTION);
 
         if ( ( neurons[numNeurons]->Get_Layer() + 1 ) > numLayers )
 
@@ -52,9 +54,9 @@ void NEURAL_NETWORK::Add_Bias_Neuron(int ID, int layer) {
 
 }
 
-void NEURAL_NETWORK::Add_Hidden_Neuron(int ID, int layer, double tau) {
+void NEURAL_NETWORK::Add_Hidden_Neuron(int ID, int layer, double tau, int transferFunction) {
 
-	neurons[numNeurons] = new NEURON(ID,HIDDEN_NEURON,layer,tau);
+	neurons[numNeurons] = new NEURON(ID,HIDDEN_NEURON,layer,tau,transferFunction);
 
 	if ( ( neurons[numNeurons]->Get_Layer() + 1 ) > numLayers )
 
@@ -65,7 +67,7 @@ void NEURAL_NETWORK::Add_Hidden_Neuron(int ID, int layer, double tau) {
 
 NEURON *NEURAL_NETWORK::Add_Motor_Neuron(int ID,int layer, double tau) {
 
-        NEURON *newNeuron = new NEURON(ID,MOTOR_NEURON,layer,tau);
+        NEURON *newNeuron = new NEURON(ID,MOTOR_NEURON,layer,tau,TANH_TRANSFER_FUNCTION);
 
         neurons[numNeurons] = newNeuron;
 

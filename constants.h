@@ -20,5 +20,9 @@ int	MAX_SYNAPSES	= 1000000;
 int	BOX		= 0;
 int	CYLINDER	= 1;
 
+int 	IDENTITY_TRANSFER_FUNCTION = 0;
+
+int	TANH_TRANSFER_FUNCTION = 1;
+
 #endif
 

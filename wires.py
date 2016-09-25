@@ -26,6 +26,10 @@ class WIRES:
 
 		return True
 
+	def Convertable_Wire(self,w):
+
+		return ( self.From_Sensor_To_Hidden(w) or self.From_Sensor_To_Motor(w) or self.From_Hidden_To_Hidden(w) or self.From_Hidden_To_Motor(w) )
+
 	def Draw(self):
 
 		fig = plt.figure(1)
@@ -76,6 +80,60 @@ class WIRES:
 
 		ax.set_yticks([])
 
+        def From_Hidden_To_Hidden(self,w):
+
+                wire = self.wires[w]
+
+                start = wire[0]
+
+                end = wire[1]
+
+                startY = start[1]
+
+                endY = end[1]
+
+                fromHidden = (startY >= c.NUM_SENSORS) and ( startY < ( c.NUM_SENSORS + c.NUM_HIDDEN_NEURONS ) )
+
+                toHidden = (endY >= c.NUM_SENSORS) and ( endY < ( c.NUM_SENSORS + c.NUM_HIDDEN_NEURONS ) )
+
+                return ( fromHidden and toHidden )
+
+        def From_Hidden_To_Motor(self,w):
+
+                wire = self.wires[w]
+
+                start = wire[0]
+
+                end = wire[1]
+
+                startY = start[1]
+
+                endY = end[1]
+
+                fromHidden = (startY >= c.NUM_SENSORS) and ( startY < ( c.NUM_SENSORS + c.NUM_HIDDEN_NEURONS ) )
+
+                toMotor = endY >= ( c.NUM_SENSORS + c.NUM_HIDDEN_NEURONS )
+
+                return ( fromHidden and toMotor )
+
+        def From_Sensor_To_Hidden(self,w):
+
+                wire = self.wires[w]
+
+                start = wire[0]
+
+                end = wire[1]
+
+                startY = start[1]
+
+                endY = end[1]
+
+                fromSensor = ( startY < c.NUM_SENSORS )
+
+                toHidden = (endY >= c.NUM_SENSORS) and ( endY < ( c.NUM_SENSORS + c.NUM_HIDDEN_NEURONS ) ) 
+
+                return ( fromSensor and toHidden )
+
 	def From_Sensor_To_Motor(self,w):
 
 		wire = self.wires[w]
@@ -98,6 +156,52 @@ class WIRES:
 
 		return self.numWires
 
+        def Get_From_Hidden_Index(self,w):
+
+                wire = self.wires[w]
+
+                start = wire[0]
+
+                startY = start[1]
+
+                return( startY - c.NUM_SENSORS )
+
+	def Get_From_Sensor_Index(self,w):
+
+		wire = self.wires[w]
+
+		start = wire[0]
+
+		startY = start[1]
+
+		return ( startY )
+	
+	def Get_To_Hidden_Index(self,w):
+
+                wire = self.wires[w]
+
+		end = wire[1]
+
+		endY = end[1]
+
+		return( endY - c.NUM_SENSORS )
+	
+        def Get_To_Motor_Index(self,w):
+
+                wire = self.wires[w]
+
+                end = wire[1]
+
+                endY = end[1]
+
+                return( endY - (c.NUM_SENSORS + c.NUM_HIDDEN_NEURONS) )
+
+	def Get_Weight(self,w):
+
+		wire = self.wires[w]
+
+		return wire[2]
+	
 	def Load(self):
 
 		f = open('wires.p','rb')

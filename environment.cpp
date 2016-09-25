@@ -197,11 +197,15 @@ void ENVIRONMENT::Create_Hidden_Neuron(void) {
 
 	std::cin >> tau;
 
+	int transferFunction;
+
+	std::cin >> transferFunction;
+
         if ( neuralNetwork == NULL )
 
                 Create_Neural_Network();
 
-	neuralNetwork->Add_Hidden_Neuron(ID,layer,tau);
+	neuralNetwork->Add_Hidden_Neuron(ID,layer,tau,transferFunction);
 }
 
 void ENVIRONMENT::Create_Joint( dWorldID world, dSpaceID space, int index) {
