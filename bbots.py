@@ -26,10 +26,8 @@ if ( numberOfCommandLineArguments > 2 ):
 	else:
 		EO_OR_GO = c.EO
 
-random.seed(randomSeed)
-
-np.random.seed(randomSeed)
-
-afpo = AFPO()
+afpo = AFPO(randomSeed,EO_OR_GO)
 
 afpo.Evolve(EO_OR_GO)
+
+afpo.Save_Fitnesses()

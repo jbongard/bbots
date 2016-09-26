@@ -91,7 +91,7 @@ class GENOME:
 
 		self.End_Simulation()
 
-                # self.fitness = -self.ann.Number_Of_Synapses()
+                #self.fitness = -self.ann.Number_Of_Synapses()
 
 	def End_Simulation(self):
 
@@ -146,15 +146,15 @@ class GENOME:
 
                 self.dominated = False
 
-        def Save(self):
+        def Save(self,randomSeed,EO_OR_GO):
 
-                f = open('tmp.txt','wb')
+                f = open('tmp2_'+str(randomSeed)+'_'+str(EO_OR_GO)+'.txt','wb')
 
                 pickle.dump(self,f)
 
                 f.close()
 
-                os.rename('tmp.txt','best.txt')
+                os.rename('tmp2_'+str(randomSeed)+'_'+str(EO_OR_GO)+'.txt','best_'+str(randomSeed)+'_'+str(EO_OR_GO)+'.txt')
 
         def Set_Dominated(self,dominated):
 

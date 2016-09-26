@@ -5,14 +5,26 @@ from genome import GENOME
 import random
 import copy
 import numpy as np
+import pickle
+import os
 
 class AFPO:
 
-        def __init__(self):
+        def __init__(self,randomSeed,EO_OR_GO):
+
+		self.randomSeed = randomSeed
+
+		self.EO_OR_GO = EO_OR_GO
+
+		random.seed(self.randomSeed)
+
+		np.random.seed(self.randomSeed)
 
 		self.failures = np.zeros(8,dtype='d')
 
                 self.obstacles = OBSTACLES()
+
+		self.bestFitnesses = np.zeros(constants.NUM_GENERATIONS)
 
                 self.genomes = {}
 
@@ -30,16 +42,26 @@ class AFPO:
 
                 self.Evaluate_All(EO_OR_GO)
 
-                for g in range(0,constants.NUM_GENERATIONS):
+                for self.g in range(0,constants.NUM_GENERATIONS):
 
 			if ( EO_OR_GO == constants.GO ):
 
-                        	print 'GO: ' + str(g) + ' ' + str(constants.NUM_GENERATIONS)
+                        	print 'GO: ' + str(self.g) + ' ' + str(constants.NUM_GENERATIONS)
 			else:
-                                print 'EO: ' + str(g) + ' ' + str(constants.NUM_GENERATIONS)
+                                print 'EO: ' + str(self.g) + ' ' + str(constants.NUM_GENERATIONS)
 
 
                         self.Advance_One_Generation(EO_OR_GO)
+
+	def Save_Fitnesses(self):
+
+                f = open('Data/tmp'+str(self.randomSeed)+'_'+str(self.EO_OR_GO)+'.txt','wb')
+
+                pickle.dump(self.bestFitnesses,f)
+
+                f.close()
+
+                os.rename('Data/tmp'+str(self.randomSeed)+'_'+str(self.EO_OR_GO)+'.txt','Data/best'+str(self.randomSeed)+'_'+str(self.EO_OR_GO)+'.p')
 
 # -------------- Private methods -----------------------
 
@@ -165,7 +187,9 @@ class AFPO:
 
 	def Save_Best(self):
 
-		self.genomes[0].Save()
+		self.bestFitnesses[self.g] = self.genomes[0].fitness
+
+		self.genomes[0].Save(self.randomSeed,self.EO_OR_GO)
 
 	def Save_Random_Robot_From_Pareto_Front(self):
 
