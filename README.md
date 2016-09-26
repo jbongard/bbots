@@ -12,10 +12,18 @@ Building ode-0.12...done
 Building simulator...done
 ```
 
-Step 2: Launch Braitenbots
+Step 2a: Launch Braitenbots in GO mode:
 ```bash
-$ python2.7 bbots.py
+$ python2.7 bbots.py 0 GO
 ```
+
+Step 2b: Launch Braitenbots in EO mode:
+```bash
+$ python2.7 bbots.py 0 EO
+```
+
+(The zero is the random seed; you can type any other
+integer in here.)
 
 Step 3: Play back the best solution (at any time):
 ```bash
