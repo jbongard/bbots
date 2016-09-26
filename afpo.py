@@ -49,9 +49,9 @@ class AFPO:
 
 		self.Sort_NonDominated_By_Fitness()
 
-		self.Print_Best()
+		# self.Print_Best()
 
-		self.Save_Best()
+		# self.Save_Best()
 
 		#self.Save_Random_Robot_From_Pareto_Front()
 

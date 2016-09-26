@@ -9,6 +9,10 @@ class AUTOMATON:
 
 		self.path = path 
 
+		print self.path
+
+		raw_input('')
+
 	def Add_Thread(self,pins,threads):
 
 		thread = WIRES()
@@ -43,7 +47,7 @@ class AUTOMATON:
 
 			return False
 
-		self.Enforce_Forward_Movement()
+		# self.Enforce_Forward_Movement()
 
 		self.Set_Distance()
 
@@ -61,7 +65,19 @@ class AUTOMATON:
 
 	def Compute_Target_Position(self):
 
-		if ( self.direction == c.RIGHT ):
+                if ( self.direction == c.UP ):
+
+                        self.xEnd = self.xStart
+
+                        self.yEnd = self.yStart - self.distance
+
+                elif ( self.direction == c.UP_RIGHT ):
+
+                        self.xEnd = self.xStart + self.distance
+
+                        self.yEnd = self.yStart - self.distance
+
+		elif ( self.direction == c.RIGHT ):
 
 			self.xEnd = self.xStart + self.distance
 
@@ -90,6 +106,12 @@ class AUTOMATON:
                         self.xEnd = self.xStart - self.distance
 
 			self.yEnd = self.yStart
+
+                elif ( self.direction == c.UP_LEFT ):
+
+                        self.xEnd = self.xStart - self.distance
+
+                        self.yEnd = self.yStart - self.distance
 
         def End_Position_Equals_Start_Position(self):
 

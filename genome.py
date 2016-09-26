@@ -4,6 +4,7 @@ from pins import PINS
 from threads import THREADS
 from automaton import AUTOMATON
 from ann import ANN
+from paths import PATHS
 
 import random
 import numpy as np
@@ -21,7 +22,9 @@ class GENOME:
 
 		self.evaluated = False
 
-		self.paths = np.random.randint(0,10,[c.MAX_THREADS,c.MAX_WIRES_PER_THREAD,c.NUM_PARAMETERS_PER_WIRE]) 
+		self.bases = np.random.randint(0,2,c.TOTAL_BINARY_BASES)
+	
+		# self.paths = np.random.randint(0,10,[c.MAX_THREADS,c.MAX_WIRES_PER_THREAD,c.NUM_PARAMETERS_PER_WIRE]) 
 
         def Age(self):
 
@@ -33,9 +36,13 @@ class GENOME:
 
                 self.threads = THREADS()
 
-                for t in range(0,c.MAX_THREADS):
+		self.paths = PATHS()
 
-                        self.automaton = AUTOMATON(self.paths[t,:,:])
+		self.paths.Convert_Bases_To_Paths(self.bases)
+
+		while t in range(0,c.MAX_THREADS):
+
+                        self.automaton = AUTOMATON(self.paths.Get_Path(t))
 
                         self.automaton.Add_Thread(self.pins,self.threads)
 
