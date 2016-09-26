@@ -99,9 +99,9 @@ class ANN:
 
 	def Number_Of_Synapses(self):
 
-		# return np.count_nonzero(self.sh) + np.count_nonzero(self.sm) + np.count_nonzero(self.hh) + np.count_nonzero(self.hm)
+		return np.count_nonzero(self.sh) + np.count_nonzero(self.sm) + np.count_nonzero(self.hh) + np.count_nonzero(self.hm)
 
-		return np.count_nonzero(self.sm)
+		# return np.count_nonzero(self.sm)
 
 	def Print(self):
 

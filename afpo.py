@@ -4,6 +4,7 @@ import constants
 from genome import GENOME
 import random
 import copy
+import numpy as np
 
 class AFPO:
 
@@ -12,6 +13,8 @@ class AFPO:
                 #random.seed(0)
 
                 #np.random.seed(0)
+
+		self.failures = np.zeros(8,dtype='d')
 
                 self.obstacles = OBSTACLES()
 
@@ -51,7 +54,7 @@ class AFPO:
 
 		# self.Print_Best()
 
-		# self.Save_Best()
+		self.Save_Best()
 
 		#self.Save_Random_Robot_From_Pareto_Front()
 
@@ -97,11 +100,11 @@ class AFPO:
 
 		runningGenome = self.numNonDominated
 
-		self.genomes[runningGenome].Start(self.obstacles,playBlind=True,playPaused=False)
+		self.genomes[runningGenome].Start(self.obstacles,playBlind=True,playPaused=False,failures=self.failures)
 
 		while ( (runningGenome+1) < constants.popSize ):
 
-			self.genomes[runningGenome+1].Start(self.obstacles,playBlind=True,playPaused=False)
+			self.genomes[runningGenome+1].Start(self.obstacles,playBlind=True,playPaused=False,failures=self.failures)
 
 			self.genomes[runningGenome].End()
 
@@ -150,6 +153,8 @@ class AFPO:
 			if ( g in self.genomes ):
 
 				self.genomes[g].Print()		
+
+		# print self.failures
 
 		print ''
 

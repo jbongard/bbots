@@ -11,7 +11,7 @@ class AUTOMATON:
 
 		self.pathIndex = 0
 
-	def Add_Thread(self,pins,threads):
+	def Add_Thread(self,pins,threads,failures):
 
 		thread = WIRES()
 
@@ -19,28 +19,31 @@ class AUTOMATON:
 
 		if ( self.success == False ):
 
+			failures[0] = failures[0] + 1
 			return False
 
-		self.success = self.Handle_Starting_Position(pins)
+		self.success = self.Handle_Starting_Position(pins,failures)
 
 		if ( self.success == False ):
 
+			failures[1] = failures[1] + 1
 			return False
 
 		while ( self.Bases_Remain() and self.success ):
 
-			self.success = self.Attempt_To_Create_Wire(pins,thread)
+			self.success = self.Attempt_To_Create_Wire(pins,thread,failures)
 
 		if ( thread.numWires > 0 ):
 
 			threads.Append(thread)
 
-	def Attempt_To_Create_Wire(self,pins,thread):
+	def Attempt_To_Create_Wire(self,pins,thread,failures):
 
 		success = self.Set_Direction()
 
 		if ( success == False ):
 
+			failures[3] = failures[3] + 1
 			return False
 
 		# self.Enforce_Forward_Movement()
@@ -49,11 +52,12 @@ class AUTOMATON:
 
 		if ( success == False ):
 
+			failures[4] = failures[4] + 1
 			return False
 
 		self.Compute_Target_Position()
 
-		success = self.Handle_Ending_Position(pins)
+		success = self.Handle_Ending_Position(pins,failures)
 
 		if ( success == False ):
 
@@ -63,11 +67,13 @@ class AUTOMATON:
 
 		if ( success == False ):
 
+			failures[7] = failures[7] + 1
+
 			return False
  
 		thread.Add_Wire([self.xStart,self.yStart],[self.xEnd,self.yEnd],wt,pins)
 
-		return self.Set_Next_Position(pins)
+		return self.Set_Next_Position(pins,failures)
 
 	def Bases_Remain(self):
 
@@ -192,9 +198,11 @@ class AUTOMATON:
 
 		return True , w
 
-        def Handle_Ending_Position(self,pins):
+        def Handle_Ending_Position(self,pins,failures):
 
                 if ( pins.Invalid_Pin([self.xEnd,self.yEnd]) ):
+
+			failures[5] = failures[5] + 1
 
                         return False
 
@@ -210,6 +218,8 @@ class AUTOMATON:
 
                         if ( pins.Free_Pins_In_Row(self.yEnd) < minimumFreePins ):
 
+				failures[6] = failures[6] + 1
+
                                 return False
                         else:
                                 self.xEnd = self.Move_X(self.xEnd,self.yEnd,pins)
@@ -220,9 +230,11 @@ class AUTOMATON:
 
 		return True
 
-        def Handle_Starting_Position(self,pins):
+        def Handle_Starting_Position(self,pins,failures):
 
                 if ( pins.Invalid_Pin([self.xStart,self.yStart]) ):
+
+			failures[1] = failures[1] + 1
 
                         return False
 
@@ -231,6 +243,8 @@ class AUTOMATON:
                         # return False # for destructive interaction case
 
                         if ( pins.Pin_Group_Full(self.yStart) ):
+
+				failures[2] = failures[2] + 1
 
                                 return False
                         else:
@@ -272,13 +286,13 @@ class AUTOMATON:
 
 		return True
 
-        def Set_Next_Position(self,pins):
+        def Set_Next_Position(self,pins,failures):
 
 		self.xStart = self.xEnd
 
                 self.yStart = self.yEnd
 
-		return self.Handle_Starting_Position(pins)
+		return self.Handle_Starting_Position(pins,failures)
 
         def Set_Starting_Position(self):
 

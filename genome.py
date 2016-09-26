@@ -6,6 +6,7 @@ from automaton import AUTOMATON
 from ann import ANN
 from paths import PATHS
 
+import copy
 import random
 import numpy as np
 import math
@@ -24,13 +25,11 @@ class GENOME:
 
 		self.bases = np.random.randint(0,2,c.TOTAL_BINARY_BASES)
 	
-		# self.paths = np.random.randint(0,10,[c.MAX_THREADS,c.MAX_WIRES_PER_THREAD,c.NUM_PARAMETERS_PER_WIRE]) 
-
         def Age(self):
 
                 self.age = self.age + 1
 
-        def Attempt_To_Create_Valid_Circuit(self):
+        def Attempt_To_Create_Valid_Circuit(self,failures):
 
                 self.pins = PINS()
 
@@ -44,7 +43,7 @@ class GENOME:
 
                         self.automaton = AUTOMATON(self.paths.Get_Path(t))
 
-                        self.automaton.Add_Thread(self.pins,self.threads)
+                        self.automaton.Add_Thread(self.pins,self.threads,failures)
 
                 # return ( self.threads.Num_Threads() > 2 )  
 
@@ -62,13 +61,13 @@ class GENOME:
 
 		return True
 
-        def Create_Valid_Circuit(self):
+        def Create_Valid_Circuit(self,failures):
 
 		validCircuit = False
 
 		while ( validCircuit == False ):
 
-			validCircuit = self.Attempt_To_Create_Valid_Circuit()
+			validCircuit = self.Attempt_To_Create_Valid_Circuit(failures)
 
         def Dominates(self,other):
 
@@ -90,15 +89,13 @@ class GENOME:
 
 	def End(self):
 
-		# self.End_Simulation()
+		self.End_Simulation()
 
-                self.fitness = -self.ann.Number_Of_Synapses()
+                # self.fitness = -self.ann.Number_Of_Synapses()
 
 	def End_Simulation(self):
 
 		self.fitness = 1000000.0
-
-		# self.fitness = 0.0
 
                 for e in range(0,c.NUM_ENVIRONMENTS):
 
@@ -121,13 +118,13 @@ class GENOME:
 
 	def Mutate(self):
 
-		i = random.randint(0,c.MAX_THREADS-1)
+		for b in range(0,c.TOTAL_BINARY_BASES):
 
-		j = random.randint(0,c.MAX_WIRES_PER_THREAD-1)
+			mutationOccurs = random.random() < c.MUTATION_PROBABILITY 
+	
+			if ( mutationOccurs ):
 
-		k = random.randint(0,c.NUM_PARAMETERS_PER_WIRE-1)
-
-		self.paths[i,j,k] = random.randint(0,9)
+				self.bases[b] = 1 - self.bases[b] # Flip the bit.
 
         def Print(self):
 
@@ -179,17 +176,17 @@ class GENOME:
 
 			self.sims[e].Start()
 
-        def Start(self,obstacles,playBlind,playPaused):
+        def Start(self,obstacles,playBlind,playPaused,failures):
 
                 #self.threads.Save()
 
                 self.ann = ANN()
 
-                self.Create_Valid_Circuit()
+                self.Create_Valid_Circuit(failures)
 
                 self.ann.Convert_Threads_To_Synapses(self.threads)
 
-		#self.Simulate(obstacles,playBlind,playPaused)
+		self.Simulate(obstacles,playBlind,playPaused)
 
 # ------------------- Private methods ------------------------
 
