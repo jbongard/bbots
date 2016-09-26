@@ -89,9 +89,9 @@ class GENOME:
 
 	def End(self):
 
-		# self.End_Simulation()
+		self.End_Simulation()
 
-                self.fitness = -self.ann.Number_Of_Synapses()
+                # self.fitness = -self.ann.Number_Of_Synapses()
 
 	def End_Simulation(self):
 
@@ -186,7 +186,7 @@ class GENOME:
 
                 self.ann.Convert_Threads_To_Synapses(self.threads)
 
-		# self.Simulate(obstacles,playBlind,playPaused)
+		self.Simulate(obstacles,playBlind,playPaused)
 
 # ------------------- Private methods ------------------------
 
