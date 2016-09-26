@@ -1,3 +1,6 @@
+GO = 0
+EO = 1
+
 evaluationTime = 300
 
 popSize = 50

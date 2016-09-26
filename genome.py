@@ -29,7 +29,7 @@ class GENOME:
 
                 self.age = self.age + 1
 
-        def Attempt_To_Create_Valid_Circuit(self,failures):
+        def Attempt_To_Create_Valid_Circuit(self,failures,experimentalRegime):
 
                 self.pins = PINS()
 
@@ -43,7 +43,7 @@ class GENOME:
 
                         self.automaton = AUTOMATON(self.paths.Get_Path(t))
 
-                        self.automaton.Add_Thread(self.pins,self.threads,failures)
+                        self.automaton.Add_Thread(self.pins,self.threads,failures,experimentalRegime)
 
                 # return ( self.threads.Num_Threads() > 2 )  
 
@@ -61,13 +61,13 @@ class GENOME:
 
 		return True
 
-        def Create_Valid_Circuit(self,failures):
+        def Create_Valid_Circuit(self,failures,experimentalRegime):
 
 		validCircuit = False
 
 		while ( validCircuit == False ):
 
-			validCircuit = self.Attempt_To_Create_Valid_Circuit(failures)
+			validCircuit = self.Attempt_To_Create_Valid_Circuit(failures,experimentalRegime)
 
         def Dominates(self,other):
 
@@ -176,13 +176,13 @@ class GENOME:
 
 			self.sims[e].Start()
 
-        def Start(self,obstacles,playBlind,playPaused,failures):
+        def Start(self,obstacles,playBlind,playPaused,failures,experimentalRegime):
 
                 #self.threads.Save()
 
                 self.ann = ANN()
 
-                self.Create_Valid_Circuit(failures)
+                self.Create_Valid_Circuit(failures,experimentalRegime)
 
                 self.ann.Convert_Threads_To_Synapses(self.threads)
 
@@ -348,6 +348,8 @@ class GENOME:
 
                 if ( self.sim.simulationSucceeded == False ):
 
+			self.fitness = self.Worst_Possible_Fitness() 
+
 			return
 
                 sensorValues = np.zeros((2,c.evaluationTime),dtype='f')
@@ -480,3 +482,7 @@ class GENOME:
                 self.Create_Body()
 
                 self.Create_Brain()
+
+        def Worst_Possible_Fitness(self):
+
+                return 0.0

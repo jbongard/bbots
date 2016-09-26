@@ -10,10 +10,6 @@ class AFPO:
 
         def __init__(self):
 
-                #random.seed(0)
-
-                #np.random.seed(0)
-
 		self.failures = np.zeros(8,dtype='d')
 
                 self.obstacles = OBSTACLES()
@@ -30,19 +26,24 @@ class AFPO:
 
                         self.nextAvailableID = self.nextAvailableID + 1
 
-        def Evolve(self):
+        def Evolve(self,EO_OR_GO):
 
-                self.Evaluate_All()
+                self.Evaluate_All(EO_OR_GO)
 
                 for g in range(0,constants.NUM_GENERATIONS):
 
-                        print g,constants.NUM_GENERATIONS
+			if ( EO_OR_GO == constants.GO ):
 
-                        self.Advance_One_Generation()
+                        	print 'GO: ' + str(g) + ' ' + str(constants.NUM_GENERATIONS)
+			else:
+                                print 'EO: ' + str(g) + ' ' + str(constants.NUM_GENERATIONS)
+
+
+                        self.Advance_One_Generation(EO_OR_GO)
 
 # -------------- Private methods -----------------------
 
-	def Advance_One_Generation(self):
+	def Advance_One_Generation(self,EO_OR_GO):
 
                 self.Find_Pareto_Front()
 
@@ -66,7 +67,7 @@ class AFPO:
 
                 self.Fill()
 
-                self.Evaluate_All()
+                self.Evaluate_All(EO_OR_GO)
 
 	def Age_NonDominated_Solutions(self):
 
@@ -96,15 +97,15 @@ class AFPO:
 
 		self.genomes[0].Display()
 
-	def Evaluate_All(self):
+	def Evaluate_All(self,EO_OR_GO):
 
 		runningGenome = self.numNonDominated
 
-		self.genomes[runningGenome].Start(self.obstacles,playBlind=True,playPaused=False,failures=self.failures)
+		self.genomes[runningGenome].Start(self.obstacles,playBlind=True,playPaused=False,failures=self.failures,experimentalRegime=EO_OR_GO)
 
 		while ( (runningGenome+1) < constants.popSize ):
 
-			self.genomes[runningGenome+1].Start(self.obstacles,playBlind=True,playPaused=False,failures=self.failures)
+			self.genomes[runningGenome+1].Start(self.obstacles,playBlind=True,playPaused=False,failures=self.failures,experimentalRegime=EO_OR_GO)
 
 			self.genomes[runningGenome].End()
 
