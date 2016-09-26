@@ -15,7 +15,11 @@ class AUTOMATON:
 
 		thread = WIRES()
 
-		self.Set_Starting_Position()
+		self.success = self.Set_Starting_Position()
+
+		if ( self.success == False ):
+
+			return False
 
 		self.success = self.Handle_Starting_Position(pins)
 
@@ -23,7 +27,7 @@ class AUTOMATON:
 
 			return False
 
-		while ( BASES_REMAIN and self.success ):
+		while ( self.Bases_Remain() and self.success ):
 
 			self.success = self.Attempt_To_Create_Wire(pins,thread)
 
@@ -41,7 +45,11 @@ class AUTOMATON:
 
 		# self.Enforce_Forward_Movement()
 
-		self.Set_Distance()
+		success = self.Set_Distance()
+
+		if ( success == False ):
+
+			return False
 
 		self.Compute_Target_Position()
 
@@ -50,10 +58,20 @@ class AUTOMATON:
 		if ( success == False ):
 
 			return False
-	 
-		thread.Add_Wire([self.xStart,self.yStart],[self.xEnd,self.yEnd],self.Get_Weight(),pins)
+	
+		[success,wt] = self.Get_Weight()
+
+		if ( success == False ):
+
+			return False
+ 
+		thread.Add_Wire([self.xStart,self.yStart],[self.xEnd,self.yEnd],wt,pins)
 
 		return self.Set_Next_Position(pins)
+
+	def Bases_Remain(self):
+
+                return ( self.pathIndex < len(self.path) )
 
 	def Compute_Target_Position(self):
 
@@ -127,6 +145,10 @@ class AUTOMATON:
 
 		w = 0.0
 
+		if ( self.Bases_Remain() == False ):
+
+			return False , w
+
 		if ( self.path[self.pathIndex] == 0 ):
 
 			w = -0.5
@@ -168,7 +190,7 @@ class AUTOMATON:
 
 		self.pathIndex = self.pathIndex + 1
 
-		return w
+		return True , w
 
         def Handle_Ending_Position(self,pins):
 
@@ -228,7 +250,11 @@ class AUTOMATON:
  
         def Set_Direction(self):
 
-                self.direction = self.path[self.pathIndex]
+		if ( self.Bases_Remain() ):
+	
+                	self.direction = self.path[self.pathIndex]
+		else:
+			return False
 
                 self.pathIndex = self.pathIndex + 1
 
@@ -236,9 +262,15 @@ class AUTOMATON:
 
         def Set_Distance(self):
 
-                self.distance = self.path[self.pathIndex]
+		if ( self.Bases_Remain() ):
+
+                	self.distance = self.path[self.pathIndex]
+		else:
+			return False
 
                 self.pathIndex = self.pathIndex + 1
+
+		return True
 
         def Set_Next_Position(self,pins):
 
@@ -250,13 +282,23 @@ class AUTOMATON:
 
         def Set_Starting_Position(self):
 
-                self.xStart = self.path[self.pathIndex]
+		if ( self.Bases_Remain() ):
+
+                	self.xStart = self.path[self.pathIndex]
+		else:
+			return False
 
 		self.pathIndex = self.pathIndex + 1
 
-                self.yStart = self.path[self.pathIndex]
+                if ( self.Bases_Remain() ):
+
+                	self.yStart = self.path[self.pathIndex]
+		else:
+			return False
 
                 self.pathIndex = self.pathIndex + 1
+
+		return True
 
 	def Start_And_End_On_Same_Row(self):
 
