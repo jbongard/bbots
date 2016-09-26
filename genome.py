@@ -40,7 +40,7 @@ class GENOME:
 
 		self.paths.Convert_Bases_To_Paths(self.bases)
 
-		while t in range(0,c.MAX_THREADS):
+		for t in range(0,c.MAX_THREADS):
 
                         self.automaton = AUTOMATON(self.paths.Get_Path(t))
 

@@ -9,9 +9,7 @@ class AUTOMATON:
 
 		self.path = path 
 
-		print self.path
-
-		raw_input('')
+		self.pathIndex = 0
 
 	def Add_Thread(self,pins,threads):
 
@@ -25,15 +23,9 @@ class AUTOMATON:
 
 			return False
 
-		self.w = 0
-
-		while ( (self.w <  c.MAX_WIRES_PER_THREAD) and self.success ):
+		while ( BASES_REMAIN and self.success ):
 
 			self.success = self.Attempt_To_Create_Wire(pins,thread)
-
-			if ( self.success ):
-
-				self.w = self.w + 1
 
 		if ( thread.numWires > 0 ):
 
@@ -133,44 +125,50 @@ class AUTOMATON:
 
         def Get_Weight(self):
 
-		if ( self.path[self.w,4] == 0 ):
+		w = 0.0
 
-			return -0.5
+		if ( self.path[self.pathIndex] == 0 ):
 
-                elif ( self.path[self.w,4] == 1 ):
+			w = -0.5
 
-                        return -0.4
+                elif ( self.path[self.pathIndex] == 1 ):
 
-                elif ( self.path[self.w,4] == 2 ):
+                        w = -0.4
 
-                        return -0.3
+                elif ( self.path[self.pathIndex] == 2 ):
 
-                elif ( self.path[self.w,4] == 3 ):
+                        w = -0.3
 
-                        return -0.2
+                elif ( self.path[self.pathIndex] == 3 ):
 
-                elif ( self.path[self.w,4] == 4 ):
+                        w = -0.2
 
-                        return -0.1
+                elif ( self.path[self.pathIndex] == 4 ):
 
-                elif ( self.path[self.w,4] == 5 ):
+                        w = -0.1
 
-                        return +0.1
+                elif ( self.path[self.pathIndex] == 5 ):
 
-                elif ( self.path[self.w,4] == 6 ):
+                        w = +0.1
 
-                        return +0.2
+                elif ( self.path[self.pathIndex] == 6 ):
 
-                elif ( self.path[self.w,4] == 7 ):
+                        w = +0.2
 
-                        return +0.3
+                elif ( self.path[self.pathIndex] == 7 ):
 
-                elif ( self.path[self.w,4] == 8 ):
+                        w = +0.3
 
-                        return +0.4
+                elif ( self.path[self.pathIndex] == 8 ):
+
+                        w = +0.4
 
                 else:
-                        return +0.5
+                        w= +0.5
+
+		self.pathIndex = self.pathIndex + 1
+
+		return w
 
         def Handle_Ending_Position(self,pins):
 
@@ -230,13 +228,17 @@ class AUTOMATON:
  
         def Set_Direction(self):
 
-                self.direction = self.path[self.w,2]
+                self.direction = self.path[self.pathIndex]
+
+                self.pathIndex = self.pathIndex + 1
 
 		return self.Valid_Direction()
 
         def Set_Distance(self):
 
-                self.distance = self.path[self.w,3]
+                self.distance = self.path[self.pathIndex]
+
+                self.pathIndex = self.pathIndex + 1
 
         def Set_Next_Position(self,pins):
 
@@ -248,9 +250,13 @@ class AUTOMATON:
 
         def Set_Starting_Position(self):
 
-                self.xStart = self.path[0,0]
+                self.xStart = self.path[self.pathIndex]
 
-                self.yStart = self.path[0,1]
+		self.pathIndex = self.pathIndex + 1
+
+                self.yStart = self.path[self.pathIndex]
+
+                self.pathIndex = self.pathIndex + 1
 
 	def Start_And_End_On_Same_Row(self):
 
