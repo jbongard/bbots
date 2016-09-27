@@ -21,7 +21,7 @@ private:
 	NEURAL_NETWORK *neuralNetwork;
 
 public:
-	ENVIRONMENT(void);
+	ENVIRONMENT();
 
 	~ENVIRONMENT(void);
 

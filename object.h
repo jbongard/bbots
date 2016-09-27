@@ -12,13 +12,15 @@ class NEURON;
 
 class OBJECT {
 
+public:
+
+        dBodyID body;
+
 private:
 
 	int	ID;
 
 	int	myShape;
-
-        dBodyID body;
 
         dGeomID geom;
 

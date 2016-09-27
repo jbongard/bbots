@@ -10,7 +10,7 @@ extern int CYLINDER;
 extern int MAX_OBJECTS;
 extern int MAX_JOINTS;
 
-ENVIRONMENT::ENVIRONMENT(void) {
+ENVIRONMENT::ENVIRONMENT() {
 
 	objects = new OBJECT * [MAX_OBJECTS];
 
@@ -38,7 +38,7 @@ void ENVIRONMENT::Draw(int t) {
 
         for (int i=0;i<numberOfBodies;i++)
 
-                objects[i]->Draw(t);
+               objects[i]->Draw(t);
 }
 
 void ENVIRONMENT::Read_From_Python(dWorldID world,dSpaceID space, int *evaluationTime) {
