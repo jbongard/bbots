@@ -5,9 +5,9 @@ from obstacles import OBSTACLES
 import os
 import pickle
 
-if ( os.path.exists('best.txt') ):
+if ( os.path.exists('best_1_1.txt') ):
 
-	f = open('best.txt','rb')
+	f = open('best_1_1.txt','rb')
 
         genome = pickle.load(f)
 

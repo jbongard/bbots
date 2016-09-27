@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import math
 from scipy.stats import ttest_ind, ttest_ind_from_stats
 
-numRuns = 13
+numRuns = 19
 
 fitnesses = np.zeros([numRuns,c.NUM_GENERATIONS,2],dtype='f')
 
@@ -20,6 +20,8 @@ for i in range(0,numRuns):
                 fitnesses[i,:,k] = -pickle.load(f)
 
 		f.close()
+
+		print i,k,fitnesses[i,c.NUM_GENERATIONS-1,k]
 
 meanFitnesses = np.mean(fitnesses,0)
 
@@ -59,5 +61,5 @@ plt.ylabel('Fitness (total light exposure)')
 
 #plt.show()
 
-plt.savefig('Fig1.png')
+plt.savefig('Text/Fig1.png')
 
