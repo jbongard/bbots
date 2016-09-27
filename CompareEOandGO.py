@@ -59,5 +59,5 @@ plt.ylabel('Fitness (total light exposure)')
 
 #plt.show()
 
-plt.savefig('/Users/jbongard/Desktop/Fig1.png')
+plt.savefig('Fig1.png')
 
