@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import math
 from scipy.stats import ttest_ind, ttest_ind_from_stats
 
-numRuns = 19
+numRuns = 30
 
 fitnesses = np.zeros([numRuns,c.NUM_GENERATIONS,2],dtype='f')
 
