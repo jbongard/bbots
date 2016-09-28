@@ -13,7 +13,7 @@ for i in range(0,numRuns):
 
 	for k in range(0,2):
 
-		fileName = 'Data/best'+str(i)+'_'+str(k)+'.p'
+		fileName = 'Data_H4/best'+str(i)+'_'+str(k)+'.p'
 
                 f = open(fileName,'rb')
 
